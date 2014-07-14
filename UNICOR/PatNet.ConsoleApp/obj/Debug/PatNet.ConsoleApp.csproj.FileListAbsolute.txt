@@ -1,0 +1,8 @@
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\PatNet.ConsoleApp.exe.config
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\PatNet.ConsoleApp.exe
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\PatNet.ConsoleApp.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\obj\Debug\PatNet.ConsoleApp.csprojResolveAssemblyReference.cache
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\obj\Debug\PatNet.ConsoleApp.exe
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\obj\Debug\PatNet.ConsoleApp.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\PatNet.Lib.dll
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\PatNet.Lib.pdb

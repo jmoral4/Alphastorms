@@ -1,1 +1,9 @@
 C:\Users\jomorale\Documents\Visual Studio 2013\Projects\UNICOR\PatNet.FileService\bin\Debug\PatNet.FileService.exe.config
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Debug\PatNet.FileService.exe.config
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Debug\PatNet.FileService.exe
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Debug\PatNet.FileService.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Debug\PatNet.Lib.dll
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Debug\PatNet.Lib.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.csprojResolveAssemblyReference.cache
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.exe
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.pdb
