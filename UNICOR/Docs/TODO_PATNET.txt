@@ -1,0 +1,26 @@
+
+Logger
+
+FileWatcher
+Collect file props
+
+ImageFile
+AMdFile
+dtaFile
+FileControl
+
+Lst FIle?>
+shpt - text files (dta)
+shptA - amendement files  (.amd)
+
+.CMB = combined abstract + bodies
+.T1 ( text file)
+
+shipment numbers.... tracking, useful for removal
+reloading files, tracking purposes
+Snapshot?
+Error Handler?
+
+strip down SP2013 deployment
+lookup a suboptimal backup solution for this configuration
+
