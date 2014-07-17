@@ -20,10 +20,14 @@ namespace PatNet.Lib
     {
         //example line from SHPTXXXX.lst
         //  //1. ShipT4853\13201171.001; Pgs = 32; Header Claims = 5  
+        //    1. ShipA4853\13201171.amd
         private readonly List<ShipmentFile> _fileManifest;
-        private readonly List<string> _admendments; 
+        private readonly List<string> _admendments;
+        private bool _isValid;
+        public bool IsValid { get { return _isValid; } }
 
         public int FileCount { get { return _fileManifest.Count; } }
+        public int AmendmentCount { get { return _admendments.Count; } }
 
         public Shipment()
         {
@@ -32,7 +36,7 @@ namespace PatNet.Lib
         }
 
         //log warning if file doesn't end in .lst somehow
-        public void LoadShipmentAFile(string filename)
+        private void LoadShipmentAFile(string filename)
         {
             Console.WriteLine("Processing Shipment A File - {0}", filename);
             Debug.Assert(filename.ToUpper().EndsWith("LST"), "Expected LoadShipmentTFile to end in .LST extension!");
@@ -56,7 +60,7 @@ namespace PatNet.Lib
             Console.WriteLine("Processed {0} amendments!", _admendments.Count);
         }
 
-        public void LoadShipmentTFile(string filename)
+        private void LoadShipmentTFile(string filename)
         {
             Console.WriteLine("Processing Shipment T File - {0}", filename);
             Debug.Assert(filename.ToUpper().EndsWith("LST"), "Expected LoadShipmentTFile to end in .LST extension!");
@@ -71,11 +75,15 @@ namespace PatNet.Lib
                 if (line.Contains("Pgs") && line.Contains("Header Claims"))
                 {
                     var sections = line.Split(';');
-                    var fileStats = new ShipmentFile();
-                    
-                    fileStats.Name = sections[0].Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[1].Replace(".001", "");
-                    fileStats.PageCount = Int32.Parse(sections[1].Split('=')[1].Trim());
-                    fileStats.HeaderClaims = Int32.Parse(sections[2].Split('=')[1].Trim());
+                    var fileStats = new ShipmentFile
+                    {
+                        Name =
+                            sections[0].Split(new string[] {@"\"}, StringSplitOptions.RemoveEmptyEntries)[1].Replace(
+                                ".001", ""),
+                        PageCount = Int32.Parse(sections[1].Split('=')[1].Trim()),
+                        HeaderClaims = Int32.Parse(sections[2].Split('=')[1].Trim())
+                    };
+
                     _fileManifest.Add(fileStats);
                 }
             }
@@ -91,11 +99,11 @@ namespace PatNet.Lib
             Console.WriteLine("Processed {0} files!", _fileManifest.Count);
         }
 
-        public void Validate()
+        public bool Validate()
         {
            //  number is from the folder path, stored in number as well
             //scan for .lst files
-            DirectoryInfo di = new DirectoryInfo(Path);
+            var di = new DirectoryInfo(Path);
 
             var lstFiles = di.GetFiles("*.lst");
             foreach (var file in lstFiles)
@@ -137,11 +145,20 @@ namespace PatNet.Lib
             {
                 Console.WriteLine("Missing: {0}" , s);
             }
+
+
+            return _isValid = missingFiles.Count == 0 ? true : false;
+
         }
 
         public string Path { get; set; }
 
         public string Number { get; set; }
+
+        public void Process()
+        {
+            throw new NotImplementedException();
+        }
     }
 
  

@@ -14,11 +14,12 @@ namespace PatNet.ConsoleApp
             Console.WriteLine("App started. Init FolderWatcher.");
             //FolderWatcher fw = new FolderWatcher(@"C:\Temp\input", 500);
             //fw.Watch();
-            Shipment shipment = new Shipment();
-            shipment.Path = @"E:\UNICOR\Information for Jonathan\export\4853";
-            shipment.Number = "4853";
+            Shipment shipment = new Shipment {Path = @"E:\UNICOR\Information for Jonathan\export\4853", Number = "4853"};
             shipment.Validate();
-          
+            if (shipment.IsValid)
+            {
+                shipment.Process();
+            }
 
             Console.WriteLine("Press any key to Exit");
             Console.ReadKey();
