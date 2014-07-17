@@ -1,0 +1,12 @@
+C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\bin\StockBot.dll.config
+C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\bin\StockBot.dll
+C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\bin\StockBot.pdb
+C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\obj\Debug\StockBot.csprojResolveAssemblyReference.cache
+C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\obj\Debug\StockBot.dll
+C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\obj\Debug\StockBot.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\bin\StockBot.dll.config
+C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\bin\StockBot.dll
+C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\bin\StockBot.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.csprojResolveAssemblyReference.cache
+C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.dll
+C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.pdb

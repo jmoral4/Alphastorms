@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>ftp://waws-prod-blu-001.ftp.azurewebsites.windows.net/site/wwwroot</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/StockBot.dll">
+      <publishTime>12/18/2013 08:28:04</publishTime>
+    </File>
+    <File Include="css/bootstrap-theme.css">
+      <publishTime>12/18/2013 08:05:07</publishTime>
+    </File>
+    <File Include="css/bootstrap-theme.min.css">
+      <publishTime>12/18/2013 08:05:07</publishTime>
+    </File>
+    <File Include="css/bootstrap.css">
+      <publishTime>12/18/2013 08:05:07</publishTime>
+    </File>
+    <File Include="css/bootstrap.min.css">
+      <publishTime>12/18/2013 08:05:07</publishTime>
+    </File>
+    <File Include="default.aspx">
+      <publishTime>12/18/2013 08:27:28</publishTime>
+    </File>
+    <File Include="default.html">
+      <publishTime>12/18/2013 08:26:39</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>12/18/2013 08:05:40</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>12/18/2013 08:05:40</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>12/18/2013 08:05:40</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>12/18/2013 08:05:40</publishTime>
+    </File>
+    <File Include="img/azure.png">
+      <publishTime>12/18/2013 07:49:17</publishTime>
+    </File>
+    <File Include="img/btn.png">
+      <publishTime>12/18/2013 07:49:17</publishTime>
+    </File>
+    <File Include="img/glyphicons-halflings-white.png">
+      <publishTime>12/18/2013 07:49:18</publishTime>
+    </File>
+    <File Include="img/glyphicons-halflings.png">
+      <publishTime>12/18/2013 07:49:18</publishTime>
+    </File>
+    <File Include="img/Thumbs.db">
+      <publishTime>12/18/2013 07:49:18</publishTime>
+    </File>
+    <File Include="js/bootstrap.js">
+      <publishTime>12/18/2013 08:06:48</publishTime>
+    </File>
+    <File Include="js/bootstrap.min.js">
+      <publishTime>12/18/2013 08:06:48</publishTime>
+    </File>
+    <File Include="js/jquery-1.10.2.min.js">
+      <publishTime>12/18/2013 08:07:20</publishTime>
+    </File>
+    <File Include="js/knockout-3.0.0.js">
+      <publishTime>12/18/2013 08:07:20</publishTime>
+    </File>
+    <File Include="js/raphael-min.js">
+      <publishTime>12/18/2013 08:07:20</publishTime>
+    </File>
+    <File Include="prez/css/print/paper.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/print/pdf.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/reveal.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/reveal.min.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/beige.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/blood.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/default.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/moon.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/night.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/README.md">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/serif.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/simple.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/sky.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/solarized.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/beige.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/blood.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/default.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/moon.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/night.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/serif.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/simple.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/sky.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/source/solarized.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/template/mixins.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/template/settings.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/css/theme/template/theme.scss">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/index.html">
+      <publishTime>12/18/2013 08:08:41</publishTime>
+    </File>
+    <File Include="prez/js/reveal.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/js/reveal.min.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/css/zenburn.css">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/font/league_gothic-webfont.eot">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/font/league_gothic-webfont.svg">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/font/league_gothic-webfont.ttf">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/font/league_gothic-webfont.woff">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/font/league_gothic_license">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/js/classList.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/js/head.min.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/lib/js/html5shiv.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/highlight/highlight.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/leap/leap.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/markdown/example.html">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/markdown/example.md">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/markdown/markdown.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/markdown/marked.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/math/math.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/multiplex/client.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/multiplex/index.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/multiplex/master.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/notes-server/client.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/notes-server/index.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/notes-server/notes.html">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/notes/notes.html">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/notes/notes.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/postmessage/example.html">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/postmessage/postmessage.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/print-pdf/print-pdf.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/remotes/remotes.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/search/search.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="prez/plugin/zoom-js/zoom.js">
+      <publishTime>12/18/2013 08:08:32</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>12/18/2013 08:29:51</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

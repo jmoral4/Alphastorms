@@ -1,0 +1,28 @@
+@import url( https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700 );
+html {
+	background-color: rgb(34, 34, 34);
+}
+body {
+	background-color: rgb(34, 34, 34);
+}
+body {
+	font: 12px Lato, "Helvetica Neue", Helvetica, Arial, sans-serif; padding: 100px 50px; color: rgb(255, 255, 255); font-size-adjust: none; font-stretch: normal;
+}
+h1 {
+	font-size: 2.5em; font-weight: normal; margin-bottom: 10px;
+}
+p {
+	text-transform: uppercase;
+}
+a {
+	padding: 8px 12px; border: 2px solid rgba(255, 255, 255, 0.5); color: rgb(255, 255, 255); text-decoration: none; margin-top: 20px; margin-left: 15px; display: inline-block;
+}
+a:hover {
+	border-color: rgb(255, 255, 255);
+}
+header {
+	left: 40px; bottom: 20px; position: absolute;
+}
+footer {
+	text-align: right; right: 40px; bottom: 20px; position: absolute;
+}
