@@ -11,6 +11,7 @@ namespace PatNet.Lib
     public class ShipmentFile
     {
         public string Name { get; set; }
+        public string FileName { get; set; }
         public int PageCount { get; set; }
         public int HeaderClaims { get; set; }
 
@@ -22,7 +23,7 @@ namespace PatNet.Lib
         //  //1. ShipT4853\13201171.001; Pgs = 32; Header Claims = 5  
         //    1. ShipA4853\13201171.amd
         private readonly List<ShipmentFile> _fileManifest;
-        private readonly List<string> _admendments;
+        private readonly List<ShipmentFile> _admendments;
         private bool _isValid;
         public bool IsValid { get { return _isValid; } }
 
@@ -32,7 +33,7 @@ namespace PatNet.Lib
         public Shipment()
         {
             _fileManifest = new List<ShipmentFile>();
-            _admendments = new List<string>();
+            _admendments = new List<ShipmentFile>();
         }
 
         //log warning if file doesn't end in .lst somehow
@@ -40,8 +41,10 @@ namespace PatNet.Lib
         {
             Console.WriteLine("Processing Shipment A File - {0}", filename);
             Debug.Assert(filename.ToUpper().EndsWith("LST"), "Expected LoadShipmentTFile to end in .LST extension!");
+
             if( _admendments.Count > 0)
                 _admendments.Clear();
+
             TextReader tr = new StreamReader(filename);
             string line;
 
@@ -50,8 +53,7 @@ namespace PatNet.Lib
                 if (line.ToUpper().Contains(".AMD") )
                 {
                     var amd = line.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                    _admendments.Add(amd);
-                  
+                    _admendments.Add(new ShipmentFile(){FileName = amd, Name = amd.Replace(".amd","")});                    
                 }
             }
 
@@ -83,6 +85,7 @@ namespace PatNet.Lib
                         PageCount = Int32.Parse(sections[1].Split('=')[1].Trim()),
                         HeaderClaims = Int32.Parse(sections[2].Split('=')[1].Trim())
                     };
+                    fileStats.FileName = fileStats.Name + ".dta";
 
                     _fileManifest.Add(fileStats);
                 }
@@ -116,18 +119,18 @@ namespace PatNet.Lib
 
             //perform validation
             var allFiles = di.GetFiles();
-            var missingFiles = new List<string>();
+            var missingFiles = new List<ShipmentFile>();
             foreach (var f in _fileManifest)
             {
-                var matchCount = allFiles.Count(x => x.Name == f.Name + ".dta");
+                var matchCount = allFiles.Count(x => x.Name == f.FileName);
                 if( matchCount == 0)
-                    missingFiles.Add(f.Name + ".dta");
+                    missingFiles.Add(f);
             }
 
 
             foreach (var a in _admendments)
             {
-                var matchCount = allFiles.Count(x => x.Name == a);
+                var matchCount = allFiles.Count(x => x.Name == a.FileName);
                 if (matchCount == 0)
                     missingFiles.Add(a );
             }
@@ -143,7 +146,7 @@ namespace PatNet.Lib
 
             foreach (var s in missingFiles)
             {
-                Console.WriteLine("Missing: {0}" , s);
+                Console.WriteLine("Missing file: {0}" , s.FileName);
             }
 
 
@@ -157,7 +160,7 @@ namespace PatNet.Lib
 
         public void Process()
         {
-            throw new NotImplementedException();
+           // throw new NotImplementedException();
         }
     }
 
