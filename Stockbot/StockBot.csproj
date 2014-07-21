@@ -156,6 +156,7 @@
     <Content Include="prez\lib\font\league_gothic-webfont.woff" />
     <Content Include="prez\lib\font\league_gothic_license" />
     <Content Include="prez\plugin\markdown\example.md" />
+    <Content Include="notes\plan.plan" />
     <None Include="Properties\PublishProfiles\stockbot - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\stockbot - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">

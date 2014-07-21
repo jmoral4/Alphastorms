@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatNet.ConsoleApp", "..\Pat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatNet.Lib", "..\PatNet.Lib\PatNet.Lib.csproj", "{0E38F47D-F33E-4340-970D-1E4BC0851D46}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatNet.Tests", "..\PatNet.Tests\PatNet.Tests.csproj", "{40DB3833-6A36-4FD7-B9DF-45E121B38220}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0E38F47D-F33E-4340-970D-1E4BC0851D46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E38F47D-F33E-4340-970D-1E4BC0851D46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E38F47D-F33E-4340-970D-1E4BC0851D46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40DB3833-6A36-4FD7-B9DF-45E121B38220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40DB3833-6A36-4FD7-B9DF-45E121B38220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40DB3833-6A36-4FD7-B9DF-45E121B38220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40DB3833-6A36-4FD7-B9DF-45E121B38220}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,3 +6,5 @@ C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\obj\Debu
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\obj\Debug\PatNet.ConsoleApp.pdb
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\PatNet.Lib.dll
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\PatNet.Lib.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\JetBrains.Annotations.dll
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\JetBrains.Annotations.xml

@@ -1,0 +1,15 @@
+<07/21/14 11:08:59.695>[Info]: App started. Init FolderWatcher.
+<07/21/14 11:08:59.696>[Info]: Recv'd Patent number 4853
+<07/21/14 11:08:59.697>[Info]: Processing directory: E:\UNICOR\Information for Jonathan\export\4853
+<07/21/14 01:17:12.618>[Info]: App started. Init FolderWatcher.
+<07/21/14 01:17:12.620>: test of true
+<07/21/14 01:17:12.620>[Info]: Recv'd Patent number 4853
+<07/21/14 01:17:12.620>[Info]: Processing directory: E:\UNICOR\Information for Jonathan\export\4853
+<07/21/14 01:18:07.359>[Info]: App started. Init FolderWatcher.
+<07/21/14 01:18:07.360>[Warn]: test of true
+<07/21/14 01:18:07.361>[Info]: Recv'd Patent number 4853
+<07/21/14 01:18:07.361>[Info]: Processing directory: E:\UNICOR\Information for Jonathan\export\4853
+<07/21/14 02:08:02.347>[Info]: App started. Init FolderWatcher.
+<07/21/14 02:08:02.349>[Warn]: test of true
+<07/21/14 02:08:02.350>[Info]: Recv'd Patent number 4853
+<07/21/14 02:08:02.350>[Info]: Processing directory: E:\UNICOR\Information for Jonathan\export\4853

@@ -1,6 +1,13 @@
 WWD:
 
 M-> Looking through logs to analyze how Merge/FileControl Operate,  KickOff Meeting, CRM architecture planning and discussion, review of OWA capabilities (also findings), review with Kim of Existing PatNet system, consolidation of notes into document
+anbattag
+IO: 1503252
+Microsoft Corporation
+Attn: Expense Reports
+One Microsoft Way
+Redmond, WA 98052
+
 
 
 source code for executables
