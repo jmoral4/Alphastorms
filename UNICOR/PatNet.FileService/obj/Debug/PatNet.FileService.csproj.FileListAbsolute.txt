@@ -7,3 +7,5 @@ C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Deb
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.csprojResolveAssemblyReference.cache
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.exe
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Debug\JetBrains.Annotations.dll
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Debug\JetBrains.Annotations.xml
