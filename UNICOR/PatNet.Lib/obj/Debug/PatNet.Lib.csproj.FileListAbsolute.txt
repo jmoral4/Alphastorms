@@ -10,4 +10,3 @@ C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNe
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\Decl\PatNet.Lib.dll
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\Decl\PatNet.Lib.pdb
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\CodeContractAnalysisRun.log
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.csprojResolveAssemblyReference.cache

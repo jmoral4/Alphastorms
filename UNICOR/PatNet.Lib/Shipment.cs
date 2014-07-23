@@ -113,7 +113,6 @@ namespace PatNet.Lib
 
         public bool Validate()
         {
-            Contract.Requires(!String.IsNullOrEmpty(_lstFile));
             var retVal = true;
             Trace.WriteLine("Processing Shipment Manifest [" + _lstFile + "]", TraceLogLevels.INFO);
             var shipmentFiles = new List<ShipmentFile>();
@@ -149,6 +148,7 @@ namespace PatNet.Lib
             }
 
             var allFiles = Directory.GetFiles(_workingDir);
+            var missingFiles = new List<ShipmentFile>();
 
             foreach (var f in shipmentFiles)
             {
