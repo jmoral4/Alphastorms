@@ -45,6 +45,7 @@
     <Compile Include="FolderWatcher.cs" />
     <Compile Include="Shipment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShipmentException.cs" />
     <Compile Include="TextWriterTraceListenerWithTimestamp.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

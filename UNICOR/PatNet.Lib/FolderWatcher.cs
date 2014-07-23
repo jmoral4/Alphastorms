@@ -27,6 +27,7 @@ namespace PatNet.Lib
         public void Watch()
         {
             // objectives:
+            // duplicate shipment check
             // wait for .LST file
             // when .LST file is spotted, verify all files present
             // while there are files that are locked (being copied) or new, continue waiting on .LST file
@@ -41,7 +42,6 @@ namespace PatNet.Lib
             _fsw.Changed += new FileSystemEventHandler(OnChanged);
             _fsw.Created += new FileSystemEventHandler(OnChanged);
             _fsw.Deleted += new FileSystemEventHandler(OnChanged);
-            _fsw.Renamed += new RenamedEventHandler(OnRenamed);
             _fsw.IncludeSubdirectories = true;
             // Begin watching.
             _fsw.EnableRaisingEvents = true;

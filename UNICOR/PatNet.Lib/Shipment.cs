@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace PatNet.Lib
         public string FileName { get; set; }
         public int PageCount { get; set; } //optional - not in shipA
         public int HeaderClaims { get; set; } // optional - not in shipA
+
+        //other uses .. for tracking during processing
+        // WasPresent, Successful, etc
     }
 
     public class Shipment
@@ -43,7 +47,7 @@ namespace PatNet.Lib
         }
 
         //log warning if file doesn't end in .lst somehow
-        private void LoadAmendmentFile([NotNull] string filename)
+        private int LoadAmendmentFile([NotNull] string filename)
         {
             if (filename == null) throw new ArgumentNullException("filename");
             Console.WriteLine("Processing Shipment A File - {0}", filename);
@@ -67,15 +71,15 @@ namespace PatNet.Lib
             }
 
             Console.WriteLine("Processed {0} amendments!", _admendments.Count);
+            return _admendments.Count;
         }
 
-        private void LoadShipmentManifest(string filename)
+        private List<ShipmentFile> LoadShipmentManifest([NotNull] string filename)
         {
-            Console.WriteLine("Processing Shipment T File - {0}", filename);
-            Debug.Assert(filename.ToUpper().EndsWith("LST"), "Expected LoadShipmentTFile to end in .LST extension!");
-            if( _fileManifest.Count > 0 )
-                _fileManifest.Clear();
-
+            Contract.Requires(String.IsNullOrEmpty(filename));
+            if (filename == null) throw new ArgumentNullException("filename");
+            Trace.WriteLine("Processing Shipment Manifest [" + filename + "]", TraceLogLevels.INFO);
+            var shipmentFiles = new List<ShipmentFile>();
             using (TextReader tr = new StreamReader(filename))
             {
                 //EXAMPLE: 1. ShipT4853\13201171.001; Pgs = 32; Header Claims = 5  
@@ -94,25 +98,29 @@ namespace PatNet.Lib
                             HeaderClaims = Int32.Parse(sections[2].Split('=')[1].Trim())
                         };
                         fileStats.FileName = fileStats.Name + ".dta";
-                        _fileManifest.Add(fileStats);
+                        shipmentFiles.Add(fileStats);                        
                     }
                 }
             }
 
-            //debug out
-            foreach (var f in _fileManifest)
+            Trace.WriteLine("Processed " + shipmentFiles.Count + " files!", TraceLogLevels.INFO);
+            return shipmentFiles;
+        }        
+
+        public bool Validate(string path)
+        {
+            try
             {
-                Console.WriteLine("{0} - {1} - {2}", f.Name, f.PageCount, f.HeaderClaims);
+                LoadLSTManifestFiles(path);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message, TraceLogLevels.ERROR);                
             }
 
-            Console.WriteLine("Processed {0} files!", _fileManifest.Count);
-        }
-
-        public bool Validate()
-        {           
-            LoadManifestFiles();
+            
             //perform validation
-            DirectoryInfo di = new DirectoryInfo(Path);           
+            DirectoryInfo di = new DirectoryInfo(path);           
             var allFiles = di.GetFiles();
             var missingFiles = new List<ShipmentFile>();
             foreach (var f in _fileManifest)
@@ -149,24 +157,31 @@ namespace PatNet.Lib
 
         }
 
-        private void LoadManifestFiles()
+        
+        public void LoadLSTManifestFiles(string patentDirectory)
         {
-            var di = new DirectoryInfo(Path);
+            if (!Directory.Exists(patentDirectory))
+                throw new ShipmentDirectoryNotFoundException("Shipment directory did not exist at: " + patentDirectory);
+
+            var di = new DirectoryInfo(patentDirectory);
             var lstFiles = di.GetFiles("*.lst");
-            Trace.WriteLineIf(lstFiles.Count() > 2, "More than two LST files were found!", TraceLogLevels.WARN);
+            if (lstFiles.Count() > 2)
+                throw new ShipmentException("More than 2 .LST files were present!");
 
             var dataFile = lstFiles.FirstOrDefault(x => x.Name.StartsWith("ShipT"));
             if (dataFile == null)
-            {
-                Trace.WriteLine("No manifest (ShipT) was found!", TraceLogLevels.ERROR);
-                throw new FileNotFoundException("Missing Manifest (shipTXXXXX.lst) file!");
-            }
-            LoadShipmentManifest(dataFile.FullName);
+                throw new ShipmentFileMissingException("Missing Manifest (shipTXXXXX.lst) file!");
+
+            var patentFiles = LoadShipmentManifest(dataFile.FullName);
+            _fileManifest = patentFiles; 
+            if (manifestCount == 0)
+                throw new ShipmentException("ShipT Manifest did not contain any data!");
 
             var amendmentFile = lstFiles.FirstOrDefault(x => x.Name.StartsWith("ShipA"));
             if (amendmentFile != null)
             {
-                LoadAmendmentFile(amendmentFile.FullName);
+                var amendments = LoadAmendmentFile(amendmentFile.FullName);
+
             }
             else
             {
