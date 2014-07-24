@@ -1,12 +1,6 @@
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\bin\Debug\PatNet.Lib.dll
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\bin\Debug\PatNet.Lib.pdb
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.dll
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.pdb
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\bin\Debug\JetBrains.Annotations.dll
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\bin\Debug\JetBrains.Annotations.xml
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\bin\Debug\PatNet.Lib.dll.CodeAnalysisLog.xml
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\bin\Debug\PatNet.Lib.dll.lastcodeanalysissucceeded
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.rewritten
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\Decl\PatNet.Lib.dll
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\Decl\PatNet.Lib.pdb
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\CodeContractAnalysisRun.log
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.dll
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.pdb

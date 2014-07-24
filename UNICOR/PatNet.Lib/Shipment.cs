@@ -18,7 +18,8 @@ namespace PatNet.Lib
         public string FileName { get; set; }
         public int PageCount { get; set; } //optional - not in shipA
         public int HeaderClaims { get; set; } // optional - not in shipA
-        public bool IsValidated { get; set; }    
+        public bool IsPresent { get; set; }
+        public bool HasImage { get; set; }
         //other uses .. for tracking during processing
         // WasPresent, Successful, etc
     }
@@ -32,33 +33,36 @@ namespace PatNet.Lib
     {
         public string FileName { get; set; }
         public string Name { get; set; }
-        public bool IsValidated { get; set; }
-
+        public bool IsPresent { get; set; }
     
     }
 
     public class AmendmentManifestFile
     {
-        private string _lstFile;
-        private string _workingDir;
-        private Dictionary<string, AmendmentFile> _textAmendments;
-
-        public AmendmentManifestFile(string lstFile, string workingDir)
+        private readonly string _filename;
+        private readonly string _workingDir;
+        private readonly Dictionary<string, AmendmentFile> _amendments;
+        public Dictionary<string, AmendmentFile> Amendments
         {
-            _lstFile = lstFile;
-            _workingDir = workingDir;
+            get { return _amendments; }
         }
+        public AmendmentManifestFile(string filename, string workingDir)
+        {
+            _filename = filename;
+            _workingDir = workingDir;
+            _amendments = new Dictionary<string, AmendmentFile>();
+        }
+
+
 
         public bool Validate()
         {            
             //WARN: on missing files
             //ERROR: on too-many file (you're not on the manifest!)
-            Console.WriteLine("Processing Shipment A File - {0}",_lstFile);
-
-            var amendments = new Dictionary<string, AmendmentFile>();
+            Console.WriteLine("Processing Shipment A File - {0}",_filename);
             var retVal = true;
             
-            using (TextReader tr = File.OpenText(_lstFile))
+            using (TextReader tr = File.OpenText(_filename))
             {
                 string line;
 
@@ -67,7 +71,7 @@ namespace PatNet.Lib
                     if (line.ToUpper().Contains(".AMD"))
                     {
                         var amd = line.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                        amendments.Add( amd, new AmendmentFile(){ FileName = amd, Name = amd.Replace(".amd", "") });
+                        Amendments.Add( amd, new AmendmentFile(){ FileName = amd, Name = amd.Replace(".amd", "") , IsPresent = false});
                     }
                 }
             }
@@ -76,52 +80,54 @@ namespace PatNet.Lib
 
             foreach (var f in allFiles)
             {
-                if (amendments.ContainsKey(f))
+                if (Amendments.ContainsKey(f))
                 {
-                    amendments[f].IsValidated = true;
+                    Amendments[f].IsPresent = true;
                 }
                 else
                 {
-                    Trace.WriteLine("File " + f + " was not accounted for in ShipA Manifest!", TraceLogLevels.ERROR);
+                    Trace.WriteLine("File " + f + " was not in the ShipA Manifest and shouldn't be here!", TraceLogLevels.ERROR);
                     retVal = false;
                 }
             }
 
-            foreach (var a in amendments.Values)
+            foreach (var a in Amendments.Values)
             {
-                if( !a.IsValidated) 
+                if( !a.IsPresent) 
                     Trace.WriteLine("File " + a.FileName + " was missing form the Shipment directory!", TraceLogLevels.WARN);
             }
 
-            _textAmendments = amendments;
-            Trace.WriteLine("Processed " + amendments.Count + " amendments!");
+            Trace.WriteLine("Processed " + Amendments.Count + " amendments!");
             return retVal;
         }
     }
 
     public class ShipmentManifestFile
     {
-        private string _lstFile;
-        private string _workingDir;
-        private Dictionary<string, ShipmentFile> _textOcrFiles;
+        private readonly string _filename;
+        private readonly string _workingDir;
+        private readonly Dictionary<string, ShipmentFile> _shipmentFiles;
+        public Dictionary<string, ShipmentFile> ShipmentFiles { get { return _shipmentFiles; } }
 
-        public ShipmentManifestFile(string lstFile, string workingDir)
+        public ShipmentManifestFile(string filename, string workingDir)
         {
-            _lstFile = lstFile;
+            _filename = filename;
             _workingDir = workingDir;
+            _shipmentFiles = new Dictionary<string, ShipmentFile>();
         }
 
         public bool Validate()
         {
             var retVal = true;
-            Trace.WriteLine("Processing Shipment Manifest [" + _lstFile + "]", TraceLogLevels.INFO);
-            var shipmentFiles = new List<ShipmentFile>();
-            using (TextReader tr = new StreamReader(_lstFile))
+            Trace.WriteLine("Processing Shipment Manifest [" + _filename + "]", TraceLogLevels.INFO);
+            using (TextReader tr = new StreamReader(_filename))
             {
                 //EXAMPLE: 1. ShipT4853\13201171.001; Pgs = 32; Header Claims = 5  
                 string line;
+                int linecount = 0;
                 while ((line = tr.ReadLine()) != null)
                 {
+                    linecount++;
                     if (line.Contains("Pgs") && line.Contains("Header Claims"))
                     {
                         var sections = line.Split(';');
@@ -137,32 +143,51 @@ namespace PatNet.Lib
                                 HeaderClaims = Int32.Parse(sections[2].Split('=')[1].Trim())
                             };
                             fileStats.FileName = fileStats.Name + ".dta";
-                            shipmentFiles.Add(fileStats);
+                            _shipmentFiles.Add(fileStats.FileName, fileStats);
                         }
                         else
                         {
-                            Trace.WriteLine("Patent File line was formatted incorrectly!", TraceLogLevels.WARN);
+                            Trace.WriteLine("Patent File line was formatted incorrectly! Line " + linecount, TraceLogLevels.ERROR);
                         }
                     }
                 }
             }
 
             var allFiles = Directory.GetFiles(_workingDir);
-            var missingFiles = new List<ShipmentFile>();
-
-            foreach (var f in shipmentFiles)
+            foreach (var f in allFiles)
             {
-                var matchCount = allFiles.Count(x => x == f.FileName);
-                if (matchCount == 0)
-                    missingFiles.Add(f);
+                if (_shipmentFiles.ContainsKey(f))
+                {
+                    _shipmentFiles[f].IsPresent = true;
+                }
+                else
+                {
+                    Trace.WriteLine("File " + f + " was not in the ShipT Manifest and shouldn't be here!", TraceLogLevels.ERROR);
+                    retVal = false;
+                }
             }
 
-            //check if images are present according to count
-            foreach (var f in shipmentFiles)
+            foreach (var a in _shipmentFiles.Values)
             {
-                var c = Directory.GetFiles(_workingDir + @"\" + f.Name).Count();
-                if (c != f.PageCount)
-                    Console.WriteLine("Missing Image files for patent {0}. Expected {1} but had {2}!", f.Name, f.PageCount, c);
+                if (!a.IsPresent)
+                    Trace.WriteLine("File " + a.FileName + " was missing form the Shipment directory!", TraceLogLevels.WARN);
+            }
+           
+
+            //check if images are present according to count
+            foreach (var f in _shipmentFiles)
+            {
+                var shipment = f.Value;
+                if (f.Value.IsPresent)
+                {
+                    var c = Directory.GetFiles(_workingDir + @"\" + shipment.Name).Count();
+                    if (c != shipment.PageCount)
+                        Trace.WriteLine(
+                            String.Format("Missing Image files for patent {0}. Expected {1} but had {2}!", shipment.Name,
+                                shipment.PageCount, c),
+                                TraceLogLevels.ERROR
+                            );
+                }              
             }
 
             return retVal;
@@ -175,25 +200,20 @@ namespace PatNet.Lib
         //example line from SHPTXXXX.lst
         //  1. ShipT4853\13201171.001; Pgs = 32; Header Claims = 5  
         //  1. ShipA4853\13201171.amd
-        private List<ShipmentFile> _fileManifest;
-        private readonly List<ShipmentFile> _admendments;
+        private ShipmentManifestFile _shipmentManifest;
+        private AmendmentManifestFile _amendmentManifest;
+
         private ShipmentStates _shipmentState;
         public ShipmentStates ShipmentState { get { return _shipmentState; } }
 
         public readonly string Path;
         public readonly string ShipmentNumber;
-        private bool _isValid;
-        public bool IsValid { get { return _isValid; } }
 
-        public int FileCount { get { return _fileManifest.Count; } }
-        public int AmendmentCount { get { return _admendments.Count; } }
 
         public Shipment([NotNull] string path, [NotNull] string shipmentNumber)
         {
             Path = path;
-            ShipmentNumber = shipmentNumber;
-            _fileManifest = new List<ShipmentFile>();
-            _admendments = new List<ShipmentFile>();           
+            ShipmentNumber = shipmentNumber;         
         }
 
         //log warning if file doesn't end in .lst somehow
@@ -202,23 +222,39 @@ namespace PatNet.Lib
         public bool Validate(string path)
         {
             _shipmentState = ShipmentStates.VALIDATING;
+            var isValid = true;
             try
             {
-                //create manifest file
-                var lstFiles = Directory.GetFiles("*.lst");
-                AmendmentManifestFile amf = null;
+                ValidateShipmentDirectory(path);
+                var lstFiles = Directory.GetFiles(path,"*.lst");
+                if (lstFiles.Count() > 2)
+                    throw new ShipmentException("More than 2 .LST files were present!");
+                if( !lstFiles.Any())
+                    throw new ShipmentFileMissingException("Missing ShipT manifest! (ShipTXXXXXX.lst file)");
+
                 foreach (var f in lstFiles)
                 {
                     if (f.ToUpper().StartsWith("SHIPA"))
-                    {
-                        amf = new AmendmentManifestFile(f, path);
-                        amf.Validate();
+                    {                      
+                        _amendmentManifest= new AmendmentManifestFile(f, path);
+                        isValid = _amendmentManifest.Validate() && isValid;
+                        if (_amendmentManifest.Amendments.Count == 0)
+                            throw new ShipmentException("Manifest file (ShipA) did not contain any data!");
                     }
 
-                    //if( f.ToUpper().StartsWith("SHIPT"))
-                       
-
-                }               
+                    if (f.ToUpper().StartsWith("SHIPT"))
+                    {
+                        _shipmentManifest = new ShipmentManifestFile(f, path);                         
+                        isValid = _amendmentManifest.Validate() && isValid;
+                        if (_shipmentManifest.ShipmentFiles.Count == 0)
+                            throw new ShipmentException("ShipT Manifest did not contain any data!");
+                    }
+                }        
+       
+                if( _amendmentManifest == null )
+                    Trace.WriteLine("No amendment files were found.", TraceLogLevels.WARN);
+                if (_shipmentManifest == null)
+                    throw new ShipmentFileMissingException("Missing Manifest (shipTXXXXX.lst) file!");
             }
             catch (Exception ex)
             {
@@ -227,154 +263,24 @@ namespace PatNet.Lib
                 _shipmentState = ShipmentStates.FAILED;
                 return false;
             }
-            Console.WriteLine("Loaded and moving on");
-            
-            //perform validation
-            DirectoryInfo di = new DirectoryInfo(path);           
-            var allFiles = di.GetFiles();
-            var missingFiles = new List<ShipmentFile>();
-            foreach (var f in _fileManifest)
-            {
-                var matchCount = allFiles.Count(x => x.Name == f.FileName);
-                if( matchCount == 0)
-                    missingFiles.Add(f);
-            }
-
-
-            foreach (var a in _admendments)
-            {
-                var matchCount = allFiles.Count(x => x.Name == a.FileName);
-                if (matchCount == 0)
-                    missingFiles.Add(a );
-            }
-
-            //check if images are present according to count
-            foreach (var f in _fileManifest)
-            {
-                var c = Directory.GetFiles(Path + @"\" + f.Name).Count();
-                if( c != f.PageCount )
-                    Console.WriteLine("Missing Image files for patent {0}. Expected {1} but had {2}!", f.Name, f.PageCount, c);
-
-            }
-
-            foreach (var s in missingFiles)
-            {
-                Console.WriteLine("Missing file: {0}" , s.FileName);
-            }
-
-
-            return _isValid = missingFiles.Count == 0 ? true : false;
+            return isValid;
 
         }
 
-        
-        public void LoadLSTFiles(string patentDirectory)
+
+        private void ValidateShipmentDirectory(string patentDirectory)
         {
-            Contract.Requires(!String.IsNullOrEmpty(patentDirectory));            
-            
+            if( String.IsNullOrEmpty(patentDirectory))
+                throw new ShipmentDirectoryNotFoundException("Shipment directory did not exist at: NULL" );
             if (!Directory.Exists(patentDirectory))
-                throw new ShipmentDirectoryNotFoundException("Shipment directory did not exist at: " + patentDirectory);
-
-            var di = new DirectoryInfo(patentDirectory);
-            var lstFiles = di.GetFiles("*.lst");
-            if (lstFiles.Count() > 2)
-                throw new ShipmentException("More than 2 .LST files were present!");
-
-            var dataFile = lstFiles.FirstOrDefault(x => x.Name.StartsWith("ShipT"));
-            if (dataFile == null)
-                throw new ShipmentFileMissingException("Missing Manifest (shipTXXXXX.lst) file!");
-           
-            var patentFiles = LoadShipTFiles(dataFile.FullName);
-            _fileManifest = patentFiles;
-            if (_fileManifest.Count == 0)
-                throw new ShipmentException("ShipT Manifest did not contain any data!");
-
-            var amendmentFile = lstFiles.FirstOrDefault(x => x.Name.StartsWith("ShipA"));
-            if (amendmentFile != null)
-            {
-                var amendments = LoadShipAFiles(amendmentFile.FullName);
-                if( amendments.Count==0)
-                    throw new ShipmentException("Manifest file (ShipA) did not contain any data!");
-
-            }
-            else
-            {
-                Trace.WriteLine("No amendment files were found.", TraceLogLevels.WARN);
-            }
+                throw new ShipmentDirectoryNotFoundException("Shipment directory did not exist at: " + patentDirectory);                   
         }
-
-        //DEPRECATED
-        private List<ShipmentFile> LoadShipAFiles( string filename)
-        {
-            if (String.IsNullOrEmpty(filename)) throw new ArgumentNullException("filename");
-            Console.WriteLine("Processing Shipment A File - {0}", filename);
-
-            var amendments = new List<ShipmentFile>();
-            if (_admendments.Count > 0)
-                _admendments.Clear();
-
-            using (TextReader tr = new StreamReader(filename))
-            {
-                string line;
-
-                while ((line = tr.ReadLine()) != null)
-                {
-                    if (line.ToUpper().Contains(".AMD"))
-                    {
-                        var amd = line.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                        amendments.Add(new ShipmentFile() { FileName = amd, Name = amd.Replace(".amd", "") });                        
-                    }
-                }
-            }
-
-            Trace.WriteLine("Processed " + amendments.Count + " amendments!");
-            
-            return amendments;
-        }
-
-        private List<ShipmentFile> LoadShipTFiles(string filename)
-        {
-            Contract.Requires(!String.IsNullOrEmpty(filename));
-            Trace.WriteLine("Processing Shipment Manifest [" + filename + "]", TraceLogLevels.INFO);
-            var shipmentFiles = new List<ShipmentFile>();
-            using (TextReader tr = new StreamReader(filename))
-            {
-                //EXAMPLE: 1. ShipT4853\13201171.001; Pgs = 32; Header Claims = 5  
-                string line;
-                while ((line = tr.ReadLine()) != null)
-                {
-                    if (line.Contains("Pgs") && line.Contains("Header Claims"))
-                    {
-                        var sections = line.Split(';');
-                        if (sections.Count() > 2)
-                        {
-                            var fileStats = new ShipmentFile
-                            {
-                                Name =
-                                    sections[0].Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries)[1]
-                                        .Replace(
-                                            ".001", ""),
-                                PageCount = Int32.Parse(sections[1].Split('=')[1].Trim()),
-                                HeaderClaims = Int32.Parse(sections[2].Split('=')[1].Trim())
-                            };
-                            fileStats.FileName = fileStats.Name + ".dta";
-                            shipmentFiles.Add(fileStats);
-                        }
-                        else
-                        {
-                            Trace.WriteLine("Patent File line was formatted incorrectly!", TraceLogLevels.WARN);
-                        }
-                    }
-                }
-            }
-
-            Trace.WriteLine("Processed " + shipmentFiles.Count + " files!", TraceLogLevels.INFO);
-            return shipmentFiles;
-        }        
+     
 
         public void Process()
         {
-           // throw new NotImplementedException();
+            _shipmentState = ShipmentStates.PROCESSING;
+            // throw new NotImplementedException();
         }
     }
 
