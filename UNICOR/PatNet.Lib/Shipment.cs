@@ -62,7 +62,7 @@ namespace PatNet.Lib
             Console.WriteLine("Processing Shipment A File - {0}",_filename);
             var retVal = true;
             
-            using (TextReader tr = File.OpenText(_filename))
+            using (TextReader tr = File.OpenText(_workingDir + @"\" + _filename))
             {
                 string line;
 
@@ -76,13 +76,14 @@ namespace PatNet.Lib
                 }
             }
 
-            var allFiles = Directory.GetFiles(_workingDir);
+            DirectoryInfo d = new DirectoryInfo(_workingDir);
+            var allFiles = d.GetFiles("*.amd");
 
             foreach (var f in allFiles)
             {
-                if (Amendments.ContainsKey(f))
+                if (Amendments.ContainsKey(f.Name))
                 {
-                    Amendments[f].IsPresent = true;
+                    Amendments[f.Name].IsPresent = true;
                 }
                 else
                 {
@@ -120,7 +121,7 @@ namespace PatNet.Lib
         {
             var retVal = true;
             Trace.WriteLine("Processing Shipment Manifest [" + _filename + "]", TraceLogLevels.INFO);
-            using (TextReader tr = new StreamReader(_filename))
+            using (TextReader tr = new StreamReader(_workingDir + @"\" + _filename))
             {
                 //EXAMPLE: 1. ShipT4853\13201171.001; Pgs = 32; Header Claims = 5  
                 string line;
@@ -153,12 +154,13 @@ namespace PatNet.Lib
                 }
             }
 
-            var allFiles = Directory.GetFiles(_workingDir);
+            DirectoryInfo d = new DirectoryInfo(_workingDir);
+            var allFiles = d.GetFiles("*.dta");
             foreach (var f in allFiles)
             {
-                if (_shipmentFiles.ContainsKey(f))
+                if (_shipmentFiles.ContainsKey(f.Name))
                 {
-                    _shipmentFiles[f].IsPresent = true;
+                    _shipmentFiles[f.Name].IsPresent = true;
                 }
                 else
                 {
@@ -189,7 +191,7 @@ namespace PatNet.Lib
                             );
                 }              
             }
-
+            Trace.WriteLine("Processed " + ShipmentFiles.Count + " patents!");
             return retVal;
         }
     }
@@ -215,9 +217,7 @@ namespace PatNet.Lib
             Path = path;
             ShipmentNumber = shipmentNumber;         
         }
-
-        //log warning if file doesn't end in .lst somehow
-      
+        //log warning if file doesn't end in .lst somehow      
 
         public bool Validate(string path)
         {
@@ -225,8 +225,10 @@ namespace PatNet.Lib
             var isValid = true;
             try
             {
+                DirectoryInfo d = new DirectoryInfo(path);
+                
                 ValidateShipmentDirectory(path);
-                var lstFiles = Directory.GetFiles(path,"*.lst");
+                var lstFiles = d.GetFiles("*.lst");
                 if (lstFiles.Count() > 2)
                     throw new ShipmentException("More than 2 .LST files were present!");
                 if( !lstFiles.Any())
@@ -234,18 +236,18 @@ namespace PatNet.Lib
 
                 foreach (var f in lstFiles)
                 {
-                    if (f.ToUpper().StartsWith("SHIPA"))
+                    if (f.Name.ToUpper().StartsWith("SHIPA"))
                     {                      
-                        _amendmentManifest= new AmendmentManifestFile(f, path);
+                        _amendmentManifest= new AmendmentManifestFile(f.Name, path);
                         isValid = _amendmentManifest.Validate() && isValid;
                         if (_amendmentManifest.Amendments.Count == 0)
                             throw new ShipmentException("Manifest file (ShipA) did not contain any data!");
                     }
 
-                    if (f.ToUpper().StartsWith("SHIPT"))
+                    if (f.Name.ToUpper().StartsWith("SHIPT"))
                     {
-                        _shipmentManifest = new ShipmentManifestFile(f, path);                         
-                        isValid = _amendmentManifest.Validate() && isValid;
+                        _shipmentManifest = new ShipmentManifestFile(f.Name, path);
+                        isValid = _shipmentManifest.Validate() && isValid;
                         if (_shipmentManifest.ShipmentFiles.Count == 0)
                             throw new ShipmentException("ShipT Manifest did not contain any data!");
                     }

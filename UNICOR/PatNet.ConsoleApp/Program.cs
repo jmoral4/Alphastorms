@@ -33,9 +33,8 @@ namespace PatNet.ConsoleApp
 
             //FolderWatcher fw = new FolderWatcher(@"C:\Temp\input", 500);
             //fw.Watch();
-            Shipment shipment = new Shipment(path, number);
-            shipment.Validate(path);
-            if (shipment.IsValid)
+            Shipment shipment = new Shipment(path, number);            
+            if (shipment.Validate(path))
             {
                 shipment.Process();
             }
