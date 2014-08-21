@@ -1,5 +1,58 @@
 UNICOR - June - may not start until Tuesday/Wednesday 
 
+CHECK-LIST: 
+WATCHER ->
+VALIDATE ->
+PROCESS / SPLIT FILES ->
+EXTRACT STATISTICS ->
+WRITE XML META ->
+PUSH to SP2013 ->
+
+patent file - 
+compelxity, character, patent , patent number, shipment number
+
+<?xml version="1.0"?>
+<shipment id="897123">
+   <patent id="12s101">
+	  <patentFileCount>2</patentFileCount>
+	  <pages>24<pages>
+	  <charCount>98123<charCount>
+	  <claimCount>5</claimCount>
+	  <isComplex>false<isComplex>
+	  <hasAmd>true<hasAmd>                
+   </patent>
+</shipment>
+
++pg and pagecount reported don't match... does that include ammendments?
+
+claims and +cm don't match...
+
+after +ea starts the body..
+
++cm seem to be excluded from body text
+1 +pg per word page
+
+CM's in .AMD file start line with a single number
+
+
+    private int     segNum;
+    private int     claimNum;
+    private String  patentNum;
+    private String  content;
+    private int     charTotalCount;
+    private int     pageTotalCount;
+    private List<FileSegment> files;
+    private String  shipFolderName;
+    private int  shipIndex;
+    private int  shipPageCount;
+    private String patentType;
+    private boolean complex;
+    private int fileTotal;
+    private boolean hasAmd;
+    private String receivedDate;
+    private String dueDate;
+
+
 Laura Hutchcroft - AD
 Andrea Battaglia - PM
 CRM{

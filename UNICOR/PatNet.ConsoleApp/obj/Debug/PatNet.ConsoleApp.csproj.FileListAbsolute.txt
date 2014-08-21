@@ -8,3 +8,4 @@ C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debu
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\PatNet.Lib.pdb
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\JetBrains.Annotations.dll
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.ConsoleApp\bin\Debug\JetBrains.Annotations.xml
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\bin\Debug\PatNet.ConsoleApp.exe.config

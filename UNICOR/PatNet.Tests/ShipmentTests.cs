@@ -15,7 +15,7 @@ namespace PatNet.Tests
         {
             DeleteTestDir();
             Shipment s = new Shipment(testPath, "4585");            
-            s.LoadLSTManifestFiles(testPath);            
+            //s.LoadLSTManifestFiles(testPath);            
         }
 
         [TestMethod]
@@ -29,7 +29,7 @@ namespace PatNet.Tests
             File.CreateText(testPath + @"ShipT.LST").Close();
             File.CreateText(testPath + @"ShipG.LST").Close();
             Shipment s = new Shipment(testPath, "4585");
-            s.LoadLSTManifestFiles(testPath);
+            //s.LoadLSTManifestFiles(testPath);
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace PatNet.Tests
             File.CreateText(testPath + @"ShipA.LST").Close();
             File.CreateText(testPath + @"ShipT.LST").Close();
             var s = new Shipment(testPath, "4585");
-            s.LoadLSTManifestFiles(testPath);
+            //s.LoadLSTManifestFiles(testPath);
         }
 
         [TestMethod]       
@@ -51,7 +51,7 @@ namespace PatNet.Tests
 
             File.CreateText(testPath + @"ShipT.LST").Close();                       
             var s = new Shipment(testPath, "4585");
-            s.LoadLSTManifestFiles(testPath);
+            //s.LoadLSTManifestFiles(testPath);
         }
         [TestMethod]
         [ExpectedException(typeof(ShipmentFileMissingException))]
@@ -62,7 +62,7 @@ namespace PatNet.Tests
 
             File.CreateText(testPath + @"ShipA.LST").Close();
             var s = new Shipment(testPath, "4585");
-            s.LoadLSTManifestFiles(testPath);
+            //s.LoadLSTManifestFiles(testPath);
         }
 
         private void CreateTestDir()
