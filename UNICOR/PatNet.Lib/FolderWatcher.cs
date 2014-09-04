@@ -44,7 +44,7 @@ namespace PatNet.Lib
             _fsw.Deleted += new FileSystemEventHandler(OnChanged);
             _fsw.IncludeSubdirectories = true;
             // Begin watching.
-            _fsw.EnableRaisingEvents = true;
+            _fsw.EnableRaisingEvents = true; 
 
             // Wait for the user to quit the program.
             Console.WriteLine("Press \'q\' to quit the sample.");

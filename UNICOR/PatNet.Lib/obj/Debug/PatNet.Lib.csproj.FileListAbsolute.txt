@@ -4,4 +4,4 @@ C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\bin\Debug\JetBr
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\bin\Debug\JetBrains.Annotations.xml
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.dll
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.pdb
-C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.csprojResolveAssemblyReference.cache
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Lib\obj\Debug\PatNet.Lib.csproj.ResolveComReference.cache
