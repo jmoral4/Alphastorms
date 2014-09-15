@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,9 +26,11 @@ namespace PatNet.ConsoleApp
             Trace.Listeners.Add(ct);            
             Trace.WriteLine("App started. Init FolderWatcher.", TraceLogLevels.INFO);
             Trace.WriteLineIf(true, "test of true", TraceLogLevels.WARN);
+
             var number = "4853";
+            var path = ReadSetting("RootPath");
             //var path = @"E:\UNICOR\Information for Jonathan\export\4853";
-            var path = @"C:\DEV\UNICOR\Information for Jonathan\4853";
+            //var path = @"C:\DEV\UNICOR\Information for Jonathan\4853";
 
             Trace.WriteLine("Recv'd Patent number " + number, TraceLogLevels.INFO);
             Trace.WriteLine("Processing directory: " + path, TraceLogLevels.INFO);
@@ -44,5 +47,22 @@ namespace PatNet.ConsoleApp
             Console.ReadKey();
 
         }
+
+        static string ReadSetting(string key)
+        {
+            try
+            {                
+                var appSettings = ConfigurationManager.AppSettings;
+                string result = appSettings[key] ?? "Not Found";
+                Console.WriteLine(result);
+                return result;
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+                return "Error reading App settings";
+            }            
+        }
+
     }
 }

@@ -7,3 +7,11 @@ C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\bin\Debug\Jet
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\obj\Debug\PatNet.Tests.csprojResolveAssemblyReference.cache
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\obj\Debug\PatNet.Tests.dll
 C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\obj\Debug\PatNet.Tests.pdb
+C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\bin\Debug\PatNet.Tests.dll
+C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\bin\Debug\PatNet.Tests.pdb
+C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\bin\Debug\PatNet.Lib.dll
+C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\bin\Debug\JetBrains.Annotations.dll
+C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\bin\Debug\PatNet.Lib.pdb
+C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\obj\Debug\PatNet.Tests.csprojResolveAssemblyReference.cache
+C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\obj\Debug\PatNet.Tests.dll
+C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.Tests\obj\Debug\PatNet.Tests.pdb

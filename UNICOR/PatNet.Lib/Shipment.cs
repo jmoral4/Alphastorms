@@ -438,7 +438,7 @@ namespace PatNet.Lib
 
                     List<string> xmlOut = new List<string>();
 
-                    xmlOut.Add(" <?xml version=\"1.0\"?>");
+                    xmlOut.Add("<?xml version=\"1.0\"?>");
                     xmlOut.Add(string.Format("<shipment id=\"{0}\">", this.ShipmentNumber));
                     xmlOut.Add(string.Format("\t<patent id=\"{0}\">", p.Name));
                     var fCount = (abs.Count > 0 ? 1 : 0) + bodySectionPageCount + 2; //abs+image file
@@ -457,45 +457,25 @@ namespace PatNet.Lib
                     // first we are creating application of word.
                     
                     Microsoft.Office.Interop.Word.Application WordApp = new Microsoft.Office.Interop.Word.Application();
-
                     // now creating new document.
-
                     WordApp.Documents.Add();
-
                     // see word file behind your program
-
                     WordApp.Visible = false;
-
                     // get the reference of active document
-
                     Microsoft.Office.Interop.Word.Document doc = WordApp.ActiveDocument;
-
                     var imagePath = path + "\\" + p.Name;
-                  //get image directory associated..
-
-                  
-                        // iterating process for adding all images which is selected by filedialog
-
-                        foreach (string filename in Directory.GetFiles(imagePath))
-                        {
-
-                            // now add the picture in active document reference
-
-                            doc.InlineShapes.AddPicture(filename, Type.Missing, Type.Missing, Type.Missing);
-
-                        }
-
+                    //get image directory associated..
+                    // iterating process for adding all images which is selected by filedialog
+                    foreach (string filename in Directory.GetFiles(imagePath))
+                    {
+                        // now add the picture in active document reference
+                        doc.InlineShapes.AddPicture(filename, Type.Missing, Type.Missing, Type.Missing);
+                    }
                    
-
                     // file is saved.
-
                     doc.SaveAs( outputTemp + "\\" + p.Name + "_img.doc", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-
                     // application is now quit.
-
                     WordApp.Quit(Type.Missing, Type.Missing, Type.Missing);
-
-
                 }
 
                 Trace.WriteLine("Processed Patent " + p.Name + " in " + procWatch.ElapsedMilliseconds + "ms!");
