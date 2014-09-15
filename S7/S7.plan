@@ -1,0 +1,11 @@
+
+
+S7 is a 2D Graphics Rendering Engine
+
+Core components (S7.Core)	
+	Scene Graph
+		Space Partitioner  (Binary BSP, OctTree)
+	Collision Detection	
+
+S7.Engine
+	Rendering Engine
