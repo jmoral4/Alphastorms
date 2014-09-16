@@ -20,4 +20,42 @@ NoteS:
 	XML writer in place of text writer
 
 
+	http://spfileupload.codeplex.com/
+	http://get-spscripts.com/2010/10/bulk-upload-files-with-metadata-into.html
+	http://get-spscripts.com/2010/07/upload-multiple-files-into-document.html
 
+
+//check version
+$psversiontable 
+//to set a path manually
+set-location 
+
+$siteUrl = "http://sharepoint/schools/test" 
+$listName = "Students Picture Library"  [system.reflection.assembly]::LoadWithPartialName("Microsoft.Sharepoint") 
+$site = New-Object Microsoft.SharePoint.SPSite($siteUrl) 
+$web = $site.OpenWeb()
+$list = $web.Lists[$listName] 
+$fileCollection = $list.RootFolder.Files  
+$files = get-childItem -Exclude *.ps1  
+foreach ($file in $files) {    
+	 $stream = $file.OpenRead()     
+	 $uploaded = $fileCollection.Add($file.Name, $stream, $TRUE)  
+	 "Uploaded " + $file.Name      
+	 if ($stream) {
+	 $stream.Dispose()
+	 } 
+ }
+
+ if ($web) {
+ $web.Dispose()
+ } 
+ if ($site) 
+ {
+ $site.Dispose()
+ }
+
+In order to use this:
+01.Save as as .ps1 file in the same folder as the files to upload. 
+02.Change the site url and name of the list at the beginning of the script to your values 
+03.Make sure that only the files to upload and the ps1 file is in the folder 
+04.Open PowerShell using Run As Administrator 
