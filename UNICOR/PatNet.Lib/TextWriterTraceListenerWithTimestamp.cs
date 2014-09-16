@@ -30,8 +30,7 @@ namespace PatNet.Lib
         }
         protected override void Dispose(bool disposing)
         {
-            base.Flush();
-            
+            base.Flush();            
             base.Dispose(disposing);
         }
 

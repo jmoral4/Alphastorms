@@ -19,11 +19,26 @@ NoteS:
 
 	XML writer in place of text writer
 
+	Replace Word API calls with NetOffice (no need for office installed on platform)
+	http://netoffice.codeplex.com/
 
 	http://spfileupload.codeplex.com/
 	http://get-spscripts.com/2010/10/bulk-upload-files-with-metadata-into.html
 	http://get-spscripts.com/2010/07/upload-multiple-files-into-document.html
 
+	http://stackoverflow.com/questions/468469/how-do-you-upload-a-file-to-a-document-library-in-sharepoint
+	http://stackoverflow.com/questions/17057074/how-to-download-upload-files-from-to-sharepoint-2013-using-csom
+
+	OOXML
+	http://stackoverflow.com/questions/4724765/manipulating-word-documents-on-server-without-office-installed-asp-net
+
+	http://www.codeproject.com/Articles/87711/Manipulate-Docx-with-C-without-Microsoft-Word-inst
+
+	http://blogs.msdn.com/b/brian_jones/archive/2008/12/08/the-easy-way-to-assemble-multiple-word-documents.aspx
+
+
+	Word Automation limitation:
+	http://blogs.office.com/2012/09/26/whats-new-in-word-automation-services/
 
 //check version
 $psversiontable 
