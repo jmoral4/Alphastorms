@@ -2,7 +2,7 @@ namespace PatNet.Lib
 {
     public class ShipmentFile
     {
-        public string Name { get; set; }
+        public string Name { get; set; } //patent name
         public string FileName { get; set; }
         public int PageCount { get; set; } //optional - not in shipA
         public int HeaderClaims { get; set; } // optional - not in shipA

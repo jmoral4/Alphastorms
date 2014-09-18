@@ -15,8 +15,6 @@ NoteS:
 
 	Unit Tests updated
 
-	Prep source for MATT
-
 	XML writer in place of text writer
 
 	Replace Word API calls with NetOffice (no need for office installed on platform)

@@ -27,12 +27,12 @@ namespace PatNet.ConsoleApp
             Trace.WriteLine("App started. Init FolderWatcher.", TraceLogLevels.INFO);
             Trace.WriteLineIf(true, "test of true", TraceLogLevels.WARN);
 
-            var number = "4853";
+            var number = "4853b";
             var path = ReadSetting("RootPath");
             //var path = @"E:\UNICOR\Information for Jonathan\export\4853";
             //var path = @"C:\DEV\UNICOR\Information for Jonathan\4853";
 
-            Trace.WriteLine("Recv'd Patent number " + number, TraceLogLevels.INFO);
+            Trace.WriteLine("Recv'd Shipment number " + number, TraceLogLevels.INFO);
             Trace.WriteLine("Processing directory: " + path, TraceLogLevels.INFO);
 
             //FolderWatcher fw = new FolderWatcher(@"C:\Temp\input", 500);

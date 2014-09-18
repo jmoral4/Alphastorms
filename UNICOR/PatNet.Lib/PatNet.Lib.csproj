@@ -76,6 +76,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -87,6 +88,7 @@
     <Compile Include="AmendmentFile.cs" />
     <Compile Include="AmendmentManifestFile.cs" />
     <Compile Include="FolderWatcher.cs" />
+    <Compile Include="Patent.cs" />
     <Compile Include="Shipment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShipmentException.cs" />

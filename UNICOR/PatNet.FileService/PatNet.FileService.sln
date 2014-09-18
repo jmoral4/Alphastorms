@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatNet.FileService", "PatNet.FileService.csproj", "{AC882CFD-37F1-4DCA-B75E-B887A97E447F}"
 EndProject
@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{2BC7CB3D-6F93-4686-83B5-1991BAAA7F04}"
 	ProjectSection(SolutionItems) = preProject
 		Plan.plan = Plan.plan
+		Sampleconfig.txt = Sampleconfig.txt
 	EndProjectSection
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PatNet.Installer", "..\PatNet.Installer\PatNet.Installer.vdproj", "{1B7AC244-DF12-4C2E-95B5-027A8143EE25}"

@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 using System.IO;
 using JetBrains.Annotations;
 using PatNet.Lib;
+using System.Configuration;
 
 namespace PatNet.Lib
 {
+
     public enum ShipmentStates
     {
         UNKNOWN, VALIDATING, PROCESSING, COMPLETED, FAILED
@@ -63,7 +65,7 @@ namespace PatNet.Lib
                     {                      
                         _amendmentManifest= new AmendmentManifestFile(f.Name, path);
                         isValid = _amendmentManifest.Validate() && isValid;
-                        if (_amendmentManifest.Amendments.Count == 0)
+                        if (_amendmentManifest.Amendments.Count == 0) //change to warning?
                             throw new ShipmentException("Manifest file (ShipA) did not contain any data!");
                     }
 
@@ -86,7 +88,7 @@ namespace PatNet.Lib
                 Trace.WriteLine(ex.GetType().ToString() +  ex.Message, TraceLogLevels.ERROR);                 
                 // if we failed to load lst files then we should fail the validation
                 _shipmentState = ShipmentStates.FAILED;
-                return false;
+                isValid=false;
             }
             return isValid;
 
@@ -117,61 +119,34 @@ namespace PatNet.Lib
          * 
          */
 
-        public class Patent
-        {
-            public string PatentNumber { get; set; }
-        
-            public string AmendmentFile { get; set; }
-            public string Bodyfile { get; set; }
-            public int BodyFileCount { get; set; }
-            public string Abstract { get; set; }
-            public int PageCount { get; set; }
-            public int ClaimCount { get; set; }
-            public bool IsComplex { get; set; }
-
-            public bool HasAmendment
-            {
-                get { return !String.IsNullOrEmpty(AmendmentFile); }
-            }
-
-            public Patent ()
-            {
-                
-            }
-        
-
-        }
-
         public void Process()
         {
-            System.Diagnostics.Stopwatch st = new Stopwatch();
-            st.Start();
+            long totalProcessTime = 0;
             Stopwatch procWatch = new Stopwatch();
             procWatch.Start();
             _shipmentState = ShipmentStates.PROCESSING;
+            string[] complexityStrings = GetComplexityValues();
+            //load complexity values
 
             //generate a patent list
             foreach (var p in _shipmentManifest.ShipmentFiles.Values)
-            {
-                
+            {                
                 
                 Patent patent = new Patent();
                 patent.PatentNumber = p.Name;
-                //create an output
-                string outputTemp = @"C:\temp\output\" + p.Name;
+                patent.IsComplex = false;
+                //create an output -- TODO ..add ending \ if missing to TempSetting
+                string outputTemp = ReadSetting("TempOutputPath") + patent.PatentNumber;
                 if (!Directory.Exists(outputTemp))
                     Directory.CreateDirectory(outputTemp);
 
-                var amendment = _amendmentManifest.Amendments.Values.Where(x => x.Name == p.Name).FirstOrDefault();
+                var amendment = _amendmentManifest.Amendments.Values.Where(x => x.Name == patent.PatentNumber).FirstOrDefault();
                 var path = @"C:\DEV\UNICOR\Information for Jonathan\4853\";
                 if (amendment != null)
                 {
-                    File.Copy(path + amendment.FileName, outputTemp + @"\" + p.Name + "_amd.doc");
+                    File.Copy(path + amendment.FileName, outputTemp + @"\" + patent.PatentNumber + "_amd.doc");
 
                 }
-
-                //extract abstract
-
                
                 using (StreamReader sr = new StreamReader(path + p.FileName))
                 {
@@ -187,126 +162,172 @@ namespace PatNet.Lib
                     while ((line = sr.ReadLine()) != null)
                     {
                         buffer.Add(line);
+
+                        //write abstract to a separate buffer
                         if (line.Contains("+ea"))
-                        {//write buffer as abstract
+                        {
                             //12485859  Claim: 19 Page: 25                            
                             abs.AddRange(buffer);
-                            //File.WriteAllLines(outputTemp + "\\" + p.Name + "_abstract.doc", buffer);
                             buffer.Clear();
                         }
 
+                        //calculate claimcount
                         if (line.Contains("+cm"))
                         {
-                            var cmNum =
-                                line.Split(new string[] {"."}, StringSplitOptions.RemoveEmptyEntries)[0].Split(
-                                    new char[] {' '})[1];
-                            int claims = 0;
-                            Int32.TryParse(cmNum, out claims);
-                            if (claimCount < claims)
-                                claimCount = claims;
+                            //claim is excluded if it's listed as canceled
+                            if (!line.ToLower().Contains("(canceled)"))
+                            {
+                                var cmNum =
+                                    line.Split(new string[] {"."}, StringSplitOptions.RemoveEmptyEntries)[0].Split(
+                                        new char[] {' '})[1];
+                                int claims = 0;
+                                Int32.TryParse(cmNum, out claims);
+                                if (claims > 0)
+                                    claimCount++;
+                                //if (claimCount < claims)
+                                //    claimCount = claims;
+                            }                           
                         }
 
+                        //check if we hit a complexity flag
+                        foreach (string s in complexityStrings)
+                        {
+                            if ( line.Contains(s))
+                                patent.IsComplex = true;
+
+                        }
+                        //calc page count
                         if (line.Contains("+pg"))
                         {
                             totalPageCount++;
                             bodySectionPageCount++;
                         }
 
+                        //segment on pagecount > 100
                         if (bodySectionPageCount > 100)
                         {
                             bodyCount++;
                             bodySectionPageCount = 0;
-                            File.WriteAllLines(outputTemp + "\\" + p.Name + "_body_" + bodyCount + ".doc", buffer);
+                            File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_body_" + bodyCount + ".doc", buffer);
                             buffer.Clear();
                         }
 
                         //calculate character count excluding special characters
-                        var cleanWords = line.Split(new char[] {' '}).Where(x => !x.StartsWith("+")).ToList();
-                        foreach (var word in cleanWords)
-                        {
-                            runningCharCount += word.Length;
-                        }
+                        //...direct character count
+                        runningCharCount += line.Replace("\r", "").Replace("\n","").Length;
+
+                        //var cleanWords = line.Split(new char[] {' '}).Where(x => !x.StartsWith("+")).ToList();
+                        //foreach (var word in cleanWords)
+                        //{
+                        //    runningCharCount += word.Length;
+                        //}
 
                     }
+
                     //write abstract
                     if (abs.Count > 0)
                     {
-                        abs.Insert(0, string.Format("{0} Claim: {1} Page: {2}", p.Name, claimCount, totalPageCount));
-                        File.WriteAllLines(outputTemp + "\\" + p.Name + "_abstract.doc", abs);
+                        abs.Insert(0, string.Format("{0} Claim: {1} Page: {2}", patent.PatentNumber, claimCount, totalPageCount));
+                        File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_abstract.doc", abs);
                     }
 
+                    //write any remaining data to file
                     if (buffer.Count > 0)
-                        {
-                            File.WriteAllLines(outputTemp + "\\" + p.Name + "_body_" + bodyCount + ".doc", buffer);
-                        }
+                    {
+                        File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_body_" + bodyCount + ".doc", buffer);
+                    }
 
                     buffer.Clear();
 
                     //write the xml
                     /*
                     <?xml version="1.0"?>
-             <shipment id="897123">
-                <patent id="12s101">
-                <patentFileCount>2</patentFileCount>
-                <pages>24<pages>
-                <charCount>98123<charCount>
-                <claimCount>5</claimCount>
-                <isComplex>false<isComplex>
-                <hasAmd>true<hasAmd>                
-                </patent>
-             </shipment>
-             */
-
+                         <shipment id="897123">
+                            <patent id="12s101">
+                            <patentFileCount>2</patentFileCount>
+                            <pages>24<pages>
+                            <charCount>98123<charCount>
+                            <claimCount>5</claimCount>
+                            <isComplex>false<isComplex>
+                            <hasAmd>true<hasAmd>                
+                            </patent>
+                         </shipment>
+                    */
+                    
                     List<string> xmlOut = new List<string>();
-
                     xmlOut.Add("<?xml version=\"1.0\"?>");
                     xmlOut.Add(string.Format("<shipment id=\"{0}\">", this.ShipmentNumber));
-                    xmlOut.Add(string.Format("\t<patent id=\"{0}\">", p.Name));
-                    var fCount = (abs.Count > 0 ? 1 : 0) + bodySectionPageCount + 2; //abs+image file
+                    xmlOut.Add(string.Format("\t<patent id=\"{0}\">", patent.PatentNumber));
+                    var fCount = (abs.Count > 0 ? 1 : 0) + bodySectionPageCount + 2; //abs+image file+xml
                     xmlOut.Add(string.Format("\t<patentFileCount>{0}</patentFileCount>", fCount));
                     xmlOut.Add(string.Format("\t<pages>{0}</pages>", totalPageCount));
                     xmlOut.Add(string.Format("\t<charCount>{0}</charCount>", runningCharCount));
                     xmlOut.Add(string.Format("\t<claimCount>{0}</claimCount>", claimCount));
-                    xmlOut.Add(string.Format("\t<isComplex>{0}</isComplex>", false));
+                    xmlOut.Add(string.Format("\t<isComplex>{0}</isComplex>", patent.IsComplex));
                     xmlOut.Add(string.Format("\t<hasAmd>{0}</hasAmd>", abs.Count > 0));
                     xmlOut.Add("\t</patent>");
                     xmlOut.Add("</shipment>");
-                    File.WriteAllLines(outputTemp + "\\" + p.Name + "_patent.xml", xmlOut);
+                    File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_patent.xml", xmlOut);
 
                     //lastly, add associated images
-
-                    // first we are creating application of word.
-                    
-                    Microsoft.Office.Interop.Word.Application WordApp = new Microsoft.Office.Interop.Word.Application();
-                    // now creating new document.
-                    WordApp.Documents.Add();
-                    // see word file behind your program
-                    WordApp.Visible = false;
-                    // get the reference of active document
-                    Microsoft.Office.Interop.Word.Document doc = WordApp.ActiveDocument;
-                    var imagePath = path + "\\" + p.Name;
-                    //get image directory associated..
-                    // iterating process for adding all images which is selected by filedialog
-                    foreach (string filename in Directory.GetFiles(imagePath))
-                    {
-                        // now add the picture in active document reference
-                        doc.InlineShapes.AddPicture(filename, Type.Missing, Type.Missing, Type.Missing);
-                    }
-                   
-                    // file is saved.
-                    doc.SaveAs( outputTemp + "\\" + p.Name + "_img.doc", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    // application is now quit.
-                    WordApp.Quit(Type.Missing, Type.Missing, Type.Missing);
+                    SaveImagesToDoc(path, patent.PatentNumber, outputTemp);
                 }
 
-                Trace.WriteLine("Processed Patent " + p.Name + " in " + procWatch.ElapsedMilliseconds + "ms!");
+                Trace.WriteLine("Processed Patent " + patent.PatentNumber + " in " + procWatch.ElapsedMilliseconds + "ms!");
+                totalProcessTime += procWatch.ElapsedMilliseconds;
                 procWatch.Restart();
 
             }
 
-           Trace.WriteLine("Completed processing " + _shipmentManifest.ShipmentFiles.Count  + " patents in " + st.ElapsedMilliseconds + "ms", TraceLogLevels.INFO);
-            st.Stop();
+           Trace.WriteLine("Completed processing " + _shipmentManifest.ShipmentFiles.Count  + " patents in " + totalProcessTime + "ms", TraceLogLevels.INFO);
+
             _shipmentState = ShipmentStates.COMPLETED;
+        }
+
+        private string[] GetComplexityValues()
+        {
+            return ReadSetting("ComplexityValues").Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries);            
+        }
+        private string ReadSetting(string key)
+        {
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                string result = appSettings[key] ?? "Not Found";
+                Console.WriteLine(result);
+                return result;
+            }
+            catch (ConfigurationErrorsException)
+            {
+                Console.WriteLine("Error reading app settings");
+                return "Error reading App settings";
+            }
+        }
+
+        private void SaveImagesToDoc(string path, string patentNumber, string outputDirectory)
+        {
+            Microsoft.Office.Interop.Word.Application WordApp = new Microsoft.Office.Interop.Word.Application();
+            // now creating new document.
+            WordApp.Documents.Add();
+            // see word file behind your program
+            WordApp.Visible = false;
+            // get the reference of active document
+            Microsoft.Office.Interop.Word.Document doc = WordApp.ActiveDocument;
+            var imagePath = path + "\\" + patentNumber;
+            //get image directory associated..
+            // iterating process for adding all images which is selected by filedialog
+            foreach (string filename in Directory.GetFiles(imagePath))
+            {
+                // now add the picture in active document reference
+                doc.InlineShapes.AddPicture(filename, Type.Missing, Type.Missing, Type.Missing);
+            }
+
+            // file is saved.
+            doc.SaveAs(outputDirectory + "\\" + patentNumber + "_img.doc", Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                Type.Missing, Type.Missing, Type.Missing);
+            // application is now quit.
+            WordApp.Quit(Type.Missing, Type.Missing, Type.Missing);
         }
 
         public void ProcessAmendmentFiles()
@@ -315,6 +336,4 @@ namespace PatNet.Lib
 
         }
     }
-
- 
 }

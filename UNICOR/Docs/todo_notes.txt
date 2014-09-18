@@ -1,0 +1,17 @@
+
+
+Check out GetComments
+
+OOXML write comments (if done at end)
+OOXML write images
+OOXML split and write docs
+
+
+character count discrepancy
+Load complexity from xls and verify
+Claim count, verify
+
+
+
+
+
