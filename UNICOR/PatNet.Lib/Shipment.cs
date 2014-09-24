@@ -103,21 +103,7 @@ namespace PatNet.Lib
                 throw new ShipmentDirectoryNotFoundException("Shipment directory did not exist at: " + patentDirectory);                   
         }
 
-        /*
-         * 
-         * <?xml version="1.0"?>
-             <shipment id="897123">
-                <patent id="12s101">
-                <patentFileCount>2</patentFileCount>
-                <pages>24<pages>
-                <charCount>98123<charCount>
-                <claimCount>5</claimCount>
-                <isComplex>false<isComplex>
-                <hasAmd>true<hasAmd>                
-                </patent>
-             </shipment>
-         * 
-         */
+       
 
         public void Process()
         {
@@ -192,9 +178,8 @@ namespace PatNet.Lib
                         //check if we hit a complexity flag
                         foreach (string s in complexityStrings)
                         {
-                            if ( line.Contains(s))
+                            if ( line.ToUpper().Contains(s.ToUpper()))
                                 patent.IsComplex = true;
-
                         }
                         //calc page count
                         if (line.Contains("+pg"))

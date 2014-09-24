@@ -8,20 +8,108 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using Microsoft.Office.Interop.Word;
 using Timer = System.Timers.Timer;
+using System.Diagnostics;
 
 namespace PatNet.Lib
-{     
+{
 
     public class FolderWatcher
     {
-        private const int MAX_KEEP_ALIVE = 300000;
+        public enum WatcherStates { WAITING, COPYING }
+
+        public WatcherStates WatcherState;
+        private bool _gotAShipment;
+        private bool _receiving;
+        private const int MAX_KEEP_ALIVE = 30000; // 2 minutes or 120000 milliseconds
+        private readonly FileSystemWatcher _fsw;
+        private readonly FileSystemWatcher _dsw;
+        private int _keepAlive = MAX_KEEP_ALIVE;
+        private Timer _processingTimer ;
+        private int interval = 1000;
+
+        public FolderWatcher(string path)
+        {
+            // monitor filesystem for changes
+            _fsw = new FileSystemWatcher { Path = path };
+            _fsw.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.FileName; 
+            _fsw.Created += new FileSystemEventHandler(OnChanged);
+            _fsw.IncludeSubdirectories = true;
+            _dsw = new FileSystemWatcher {Path = path};
+            _dsw.NotifyFilter = NotifyFilters.DirectoryName;
+            _dsw.IncludeSubdirectories = false;
+            _dsw.Created += new FileSystemEventHandler(OnChanged);
+            _receiving = false;
+              _processingTimer = new Timer(interval);
+            _processingTimer.Elapsed += CheckIfDone;
+            WatcherState  = WatcherStates.WAITING;
+        }
+
+        public void Start()
+        {
+           // Thread.Sleep(1000); //allow main thread a moment to continue before potentially trigger signals
+            _fsw.EnableRaisingEvents = true;
+            _dsw.EnableRaisingEvents = true;
+            _processingTimer.Enabled = true;
+        }
+        public void Stop()
+        {
+            _fsw.EnableRaisingEvents = false;
+            _dsw.EnableRaisingEvents = true;
+            _processingTimer.Enabled = false;
+        }
+
+        public bool IsReceiving { get { return _receiving; } }
+        public string LastShipmentNumber = "";
+
+        private void CheckIfDone(object source, ElapsedEventArgs args)
+        {
+            _keepAlive -= interval;
+            if (_keepAlive <= 0)
+            {
+                //haven't gotten an update in 2 minutes, assume copying is completed
+                _receiving = false;
+                Trace.WriteLine("Nothing Heard! all done.", TraceLogLevels.INFO);
+                WatcherState = WatcherStates.WAITING;                
+            }
+        }
+
+        private void OnChanged(object source, FileSystemEventArgs e)
+        {
+            WatcherState = WatcherStates.COPYING;        
+            if (source == _dsw)
+            {
+              
+                //directory written
+                LastShipmentNumber = e.Name;
+                _receiving = true; 
+                Trace.WriteLine("Rec'd patent folder " + LastShipmentNumber, TraceLogLevels.INFO);
+            }
+            else          
+            {                
+                _receiving = true;
+                _keepAlive = MAX_KEEP_ALIVE; //refresh
+                Trace.WriteLine("Rec'd data _keepAlive " + e.Name, TraceLogLevels.INFO);
+            }
+
+           
+          
+        }
+
+    }
+
+
+
+    public class FolderWatcher2
+    {
+        private const int MAX_KEEP_ALIVE = 300000; // 5 minutes or 300000 milliseconds
         private readonly FileSystemWatcher _fsw;
         private DateTime _lastTimeStamp;
         private bool _processing = true;
         private Timer _processingTimer ;
-        private int _keepAlive = MAX_KEEP_ALIVE; // 300000 or 5 minutes in milliseconds
-        private const int _interval = 5000;
+        private int _keepAlive = MAX_KEEP_ALIVE; 
+        private const int _interval = 1000;
 
 
         private enum ProcessingStates
@@ -32,9 +120,14 @@ namespace PatNet.Lib
         private ProcessingStates ProcessingState;
 
 
-        public FolderWatcher(string path)
+        public FolderWatcher2(string path)
         {
-            ProcessingState = ProcessingStates.WAITING;            
+            ProcessingState = ProcessingStates.WAITING;
+
+            //create a timer which will eventually launch based on the results of the file system watcher
+            _processingTimer = new Timer(_interval);
+            _processingTimer.Elapsed += Watch;
+            //_processingTimer.Enabled = true;
 
             // monitor filesystem for changes
             _fsw = new FileSystemWatcher { Path = path };
@@ -46,18 +139,24 @@ namespace PatNet.Lib
             // _fsw.Deleted += new FileSystemEventHandler(OnChanged);
             _fsw.IncludeSubdirectories = true;
             // Begin watching.
-            _fsw.EnableRaisingEvents = true; 
+            //_fsw.EnableRaisingEvents = true; 
 
-            //create a timer which will eventually launch based on the results of the file system watcher
-            _processingTimer = new Timer(_interval);
-            _processingTimer.Elapsed +=Watch;
+        }
+
+        public void Start()
+        {
+            _fsw.EnableRaisingEvents = true;
             _processingTimer.Enabled = true;
-            
-            
+        }
+
+        public void Stop()
+        {
+            _fsw.EnableRaisingEvents = false;
+            _processingTimer.Enabled = false;
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        public void Watch(object source, ElapsedEventArgs args)
+        private void Watch(object source, ElapsedEventArgs args)
         {
             // objectives:
             // duplicate shipment check
@@ -120,22 +219,21 @@ namespace PatNet.Lib
             
         }
 
-        // Define the event handlers. 
+      
         private void OnChanged(object source, FileSystemEventArgs e)
         {
             if (e.ChangeType == WatcherChangeTypes.Created)
             {
-                //notify that we started receiving something
-                if (ProcessingState != ProcessingStates.PROCESSING)
+                //we can only move to copying from waiting
+                if (ProcessingState == ProcessingStates.WAITING)
                 {
                     ProcessingState = ProcessingStates.COPYING;
                     _keepAlive = MAX_KEEP_ALIVE; //effectively push back the count
                 }
-                else
+                else if( ProcessingState == ProcessingStates.COPYING)
                 {
-                    //we're already processing! Log this as a potential error
-                    //TODO: Log
-                    
+                    //already processing, push back the state
+                    _keepAlive = MAX_KEEP_ALIVE;                    
                 }
             }
 

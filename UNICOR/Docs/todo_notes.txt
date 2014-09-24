@@ -11,7 +11,12 @@ character count discrepancy
 Load complexity from xls and verify
 Claim count, verify
 
+Verify with tim rules for checking patent files, edge cases, what to do, etc
 
 
 
 
+
+12501762
+
+83977 PIN
