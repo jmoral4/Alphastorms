@@ -11,6 +11,16 @@ using System.IO;
 using JetBrains.Annotations;
 using PatNet.Lib;
 using System.Configuration;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using A = DocumentFormat.OpenXml.Drawing;
+using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
+using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
+//using Novacode;
+using System.Drawing;
+
+
 
 namespace PatNet.Lib
 {
@@ -105,7 +115,7 @@ namespace PatNet.Lib
 
        
 
-        public void Process()
+        public void Process(string path, string outputPath)
         {
             long totalProcessTime = 0;
             Stopwatch procWatch = new Stopwatch();
@@ -122,27 +132,28 @@ namespace PatNet.Lib
                 patent.PatentNumber = p.Name;
                 patent.IsComplex = false;
                 //create an output -- TODO ..add ending \ if missing to TempSetting
-                string outputTemp = ReadSetting("TempOutputPath") + patent.PatentNumber;
+                string outputTemp = outputPath + @"\" + patent.PatentNumber;
                 if (!Directory.Exists(outputTemp))
                     Directory.CreateDirectory(outputTemp);
 
                 var amendment = _amendmentManifest.Amendments.Values.Where(x => x.Name == patent.PatentNumber).FirstOrDefault();
-                var path = @"C:\DEV\UNICOR\Information for Jonathan\4853\";
+                
                 if (amendment != null)
                 {
-                    File.Copy(path + amendment.FileName, outputTemp + @"\" + patent.PatentNumber + "_amd.doc");
+                    File.Copy(path +  @"\" + amendment.FileName, outputTemp + @"\" + patent.PatentNumber + "_amd.doc");
 
                 }
                
-                using (StreamReader sr = new StreamReader(path + p.FileName))
+                using (StreamReader sr = new StreamReader(path + @"\" + p.FileName))
                 {
 
                     List<string> buffer = new List<string>();
                     string line;
-                    int totalPageCount = 0;
+                    int totalPageCount = _shipmentManifest.ShipmentFiles[p.FileName].PageCount;
                     int bodyCount = 0;
                     int bodySectionPageCount = 0;
-                    int claimCount = 0;
+                    int claimCount =  _shipmentManifest.ShipmentFiles[p.FileName].HeaderClaims;
+
                     List<string> abs = new List<string>();
                     int runningCharCount = 0;
                     while ((line = sr.ReadLine()) != null)
@@ -156,25 +167,7 @@ namespace PatNet.Lib
                             abs.AddRange(buffer);
                             buffer.Clear();
                         }
-
-                        //calculate claimcount
-                        if (line.Contains("+cm"))
-                        {
-                            //claim is excluded if it's listed as canceled
-                            if (!line.ToLower().Contains("(canceled)"))
-                            {
-                                var cmNum =
-                                    line.Split(new string[] {"."}, StringSplitOptions.RemoveEmptyEntries)[0].Split(
-                                        new char[] {' '})[1];
-                                int claims = 0;
-                                Int32.TryParse(cmNum, out claims);
-                                if (claims > 0)
-                                    claimCount++;
-                                //if (claimCount < claims)
-                                //    claimCount = claims;
-                            }                           
-                        }
-
+                        
                         //check if we hit a complexity flag
                         foreach (string s in complexityStrings)
                         {
@@ -184,8 +177,7 @@ namespace PatNet.Lib
                         //calc page count
                         if (line.Contains("+pg"))
                         {
-                            totalPageCount++;
-                            bodySectionPageCount++;
+                            bodySectionPageCount++; //for breaking up into sections
                         }
 
                         //segment on pagecount > 100
@@ -255,7 +247,7 @@ namespace PatNet.Lib
                     File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_patent.xml", xmlOut);
 
                     //lastly, add associated images
-                    SaveImagesToDoc(path, patent.PatentNumber, outputTemp);
+                    SaveImagesUsingOOXML(path, patent.PatentNumber, outputTemp);
                 }
 
                 Trace.WriteLine("Processed Patent " + patent.PatentNumber + " in " + procWatch.ElapsedMilliseconds + "ms!");
@@ -279,7 +271,7 @@ namespace PatNet.Lib
             {
                 var appSettings = ConfigurationManager.AppSettings;
                 string result = appSettings[key] ?? "Not Found";
-                Console.WriteLine(result);
+                //Console.WriteLine(result);
                 return result;
             }
             catch (ConfigurationErrorsException)
@@ -288,6 +280,178 @@ namespace PatNet.Lib
                 return "Error reading App settings";
             }
         }
+
+        //private void SaveImagesToDocX(string path, string patentNumber, string outputDirectory)
+        //{
+        //    using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+        //        {
+        //            // Add a main document part. 
+        //            MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+
+        //            // Create the document structure and add some text.
+        //            mainPart.Document = new Document();
+        //            Body body = mainPart.Document.AppendChild(new Body());
+        //            Paragraph para = body.AppendChild(new Paragraph());
+        //            Run run = para.AppendChild(new Run());
+        //            run.AppendChild(new Text("Create text in body - CreateWordprocessingDocument"));
+        //        }
+
+        //}
+
+        //public static void SaveUsingDocxNovacode(string path, string patentNumber, string contents )
+        //{
+        //    using (DocX document = DocX.Create("Test.docx"))
+        //   {
+        //        // Add a new Paragraph to the document.
+        //       Novacode.Paragraph p = document.InsertParagraph();
+                
+        //        // Append some text.
+        //        p.Append(contents).Font(new System.Drawing.FontFamily("Arial Black"));
+      
+        //        // Save the document.
+        //        document.Save();
+        //   }
+
+
+        //}
+
+        //public static void SaveImageUsingNovaCode(string inputPath, string patentNumber, string outputPath)
+        //{
+        //    var imagePath = inputPath + "\\" + patentNumber;
+
+        //    using (DocX document = DocX.Create(outputPath + "\\" + patentNumber + "_img.doc"))
+        //    {
+        //        foreach (string filename in Directory.GetFiles(imagePath))
+        //        {
+        //            // Add a new Paragraph to the document.
+        //            Novacode.Paragraph p = document.InsertParagraph();
+        //            var image = document.AddImage(filename);
+        //            var pic = image.CreatePicture();
+
+        //            p.InsertPicture(image.CreatePicture(11, 8));
+
+        //        }
+
+        //        // Save the document.
+        //        document.Save();
+        //    }
+
+        //}
+
+        public void SaveImagesUsingOOXML(string inputPath, string patentNumber, string outputPath)
+        {
+            var imagePath = inputPath + "\\" + patentNumber;
+            var outputDocument = outputPath + "\\" + patentNumber + "_img.docx";
+            using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(outputDocument, WordprocessingDocumentType.Document))
+                {
+                    // Add a main document part. 
+                    MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+
+                    // Create the document structure and add some text.
+                    mainPart.Document = new Document();
+                    Body body = mainPart.Document.AppendChild(new Body());
+                    
+                 wordDocument.Close();
+                }
+            foreach (string filename in Directory.GetFiles(imagePath))
+            {
+                InsertAPicture(outputDocument, filename);
+            }
+        }
+
+
+
+        public static void InsertAPicture(string document, string fileName)
+        {
+            using (WordprocessingDocument wordprocessingDocument =
+                WordprocessingDocument.Open(document, true))
+            {
+                MainDocumentPart mainPart = wordprocessingDocument.MainDocumentPart;
+
+                
+
+                using (FileStream stream = new FileStream(fileName, FileMode.Open))
+                {
+                    ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Tiff);
+                    imagePart.FeedData(stream); 
+                    AddImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart));
+                }
+
+               
+            }
+        }
+
+        private static void AddImageToBody(WordprocessingDocument wordDoc, string relationshipId)
+        {
+            // Define the reference of the image.
+            var element =
+                 new Drawing(
+                     new DW.Inline(
+                         new DW.Extent() { Cx = 990000L, Cy = 792000L },
+                         new DW.EffectExtent()
+                         {
+                             LeftEdge = 0L,
+                             TopEdge = 0L,
+                             RightEdge = 0L,
+                             BottomEdge = 0L
+                         },
+                         new DW.DocProperties()
+                         {
+                             Id = (UInt32Value)1U,
+                             Name = "Picture 1"
+                         },
+                         new DW.NonVisualGraphicFrameDrawingProperties(
+                             new A.GraphicFrameLocks() { NoChangeAspect = true }),
+                         new A.Graphic(
+                             new A.GraphicData(
+                                 new PIC.Picture(
+                                     new PIC.NonVisualPictureProperties(
+                                         new PIC.NonVisualDrawingProperties()
+                                         {
+                                             Id = (UInt32Value)0U,
+                                             Name = "New Bitmap Image.jpg"
+                                         },
+                                         new PIC.NonVisualPictureDrawingProperties()),
+                                     new PIC.BlipFill(
+                                         new A.Blip(
+                                             new A.BlipExtensionList(
+                                                 new A.BlipExtension()
+                                                 {
+                                                     Uri =
+                                                       "{28A0092B-C50C-407E-A947-70E740481C1C}"
+                                                 })
+                                         )
+                                         {
+                                             Embed = relationshipId,
+                                             CompressionState =
+                                             A.BlipCompressionValues.Print
+                                         },
+                                         new A.Stretch(
+                                             new A.FillRectangle())),
+                                     new PIC.ShapeProperties(
+                                         new A.Transform2D(
+                                             new A.Offset() { X = 0L, Y = 0L },
+                                             new A.Extents() { Cx = 990000L, Cy = 792000L }),
+                                         new A.PresetGeometry(
+                                             new A.AdjustValueList()
+                                         ) { Preset = A.ShapeTypeValues.Rectangle }))
+                             ) { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" })
+                     )
+                     {
+                         DistanceFromTop = (UInt32Value)0U,
+                         DistanceFromBottom = (UInt32Value)0U,
+                         DistanceFromLeft = (UInt32Value)0U,
+                         DistanceFromRight = (UInt32Value)0U,
+                         EditId = "50D07946"
+                     });
+
+            // Append the reference to body, the element should be in a Run.
+            wordDoc.MainDocumentPart.Document.Body.AppendChild(new Paragraph(new Run(element)));
+        }
+
+
+
+
 
         private void SaveImagesToDoc(string path, string patentNumber, string outputDirectory)
         {

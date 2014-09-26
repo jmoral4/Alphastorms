@@ -13,8 +13,10 @@ Claim count, verify
 
 Verify with tim rules for checking patent files, edge cases, what to do, etc
 
-
-
+Top
+LOAD counts of LST
+Cvt to OOXML and DOCX 
+Integrate ps script step
 
 
 12501762
