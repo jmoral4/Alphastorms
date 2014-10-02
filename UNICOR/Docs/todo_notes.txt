@@ -18,6 +18,18 @@ LOAD counts of LST
 Cvt to OOXML and DOCX 
 Integrate ps script step
 
+KEY:
+   Logging output clarity
+   Simplify Pickup
+   Re-write final DOC writing stage
+   Integrate powershell copy
+   Ensure all paths point to remove host
+   Installer to install console app
+	
+    ABSTRACT needs to contain all CLAIMS as well..
+	
+   
+12485859
 
 12501762
 
