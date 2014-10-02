@@ -18,3 +18,4 @@ C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\Pa
 C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.csprojResolveAssemblyReference.cache
 C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.exe
 C:\Users\jonathan.morales.LINKEDSOLUTIONS\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\obj\Debug\PatNet.FileService.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\UNICOR\PatNet.FileService\bin\Debug\Microsoft.Xrm.Sdk.dll
