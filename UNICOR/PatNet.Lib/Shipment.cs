@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using JetBrains.Annotations;
+using Microsoft.SharePoint.Client;
 using PatNet.Lib;
 using System.Configuration;
 using DocumentFormat.OpenXml;
@@ -20,7 +22,7 @@ using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 using System.Windows.Media.Imaging;
 //using Novacode;
 using System.Drawing;
-
+using File = System.IO.File;
 
 
 namespace PatNet.Lib
@@ -141,8 +143,8 @@ namespace PatNet.Lib
                 
                 if (amendment != null)
                 {
-                    File.Copy(path +  @"\" + amendment.FileName, outputTemp + @"\" + patent.PatentNumber + "_amd.doc");
-
+                    //File.Copy(path +  @"\" + amendment.FileName, outputTemp + @"\" + patent.PatentNumber + "_amd.doc");
+                    CopyFileToWordDocument(path + @"\" + amendment.FileName, outputTemp + @"\" + patent.PatentNumber + "_amd.docx");
                 }
                
                 using (StreamReader sr = new StreamReader(path + @"\" + p.FileName))
@@ -186,7 +188,10 @@ namespace PatNet.Lib
                         {
                             bodyCount++;
                             bodySectionPageCount = 0;
-                            File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_body_" + bodyCount + ".doc", buffer);
+                            string s = buffer.Aggregate(string.Empty, (current, b) => current + b + Environment.NewLine);
+                            //File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_body_" + bodyCount + ".docx", buffer);
+                            WriteDocument(outputTemp + "\\" + patent.PatentNumber + "_body_" + bodyCount + ".docx",
+                                s);
                             buffer.Clear();
                         }
 
@@ -206,13 +211,20 @@ namespace PatNet.Lib
                     if (abs.Count > 0)
                     {
                         abs.Insert(0, string.Format("{0} Claim: {1} Page: {2}", patent.PatentNumber, claimCount, totalPageCount));
-                        File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_abstract.doc", abs);
+                        string s = abs.Aggregate(string.Empty, (current, b) => current + b + Environment.NewLine);
+                        WriteDocument(outputTemp + "\\" + patent.PatentNumber + "_abstract.docx",
+                            s);
+                        //File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_abstract.docx", abs);
                     }
 
                     //write any remaining data to file
                     if (buffer.Count > 0)
                     {
-                        File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_body_" + bodyCount + ".doc", buffer);
+                        string s = buffer.Aggregate(string.Empty, (current, b) => current + b + Environment.NewLine);
+                        WriteDocument(outputTemp + "\\" + patent.PatentNumber + "_body_" + bodyCount + ".docx", 
+                            s );
+
+                       // File.WriteAllLines(outputTemp + "\\" + patent.PatentNumber + "_body_" + bodyCount + ".docx", buffer);
                     }
 
                     buffer.Clear();
@@ -262,6 +274,75 @@ namespace PatNet.Lib
             _shipmentState = ShipmentStates.COMPLETED;
         }
 
+        public void Send(string sharepointServerPath,  string listName, string folderPath)
+        {
+            using (var clientContext = new ClientContext(sharepointServerPath))
+            {
+                clientContext.Credentials = CredentialCache.DefaultCredentials;
+                
+                DirectoryInfo di = new DirectoryInfo(folderPath);
+                var parent = di.Name;
+                var children = di.GetDirectories();
+                //create parent folder
+
+                clientContext.Credentials = CredentialCache.DefaultCredentials;
+                foreach (var child in children)
+                {
+                    var folder = CreateFolder(clientContext.Web, "Shared Documents", parent + "/" + child);
+                }
+                 
+
+                //copy files into folders
+                foreach (var childDirectory in children)
+                {
+                    //get files
+                    foreach (var file in childDirectory.GetFiles())
+                    {
+                        using (var fs = new FileStream(file.FullName, FileMode.Open))
+                        {
+                            var list = clientContext.Web.Lists.GetByTitle("Shared Documents");
+                            clientContext.Load(list.RootFolder);
+                            clientContext.ExecuteQuery();
+                            var fileUrl = String.Format("{0}/{1}/{2}/{3}", list.RootFolder.ServerRelativeUrl, parent,
+                                childDirectory.Name, file.Name);
+
+                            Microsoft.SharePoint.Client.File.SaveBinaryDirect(clientContext, fileUrl, fs, true);
+                        }
+                    }
+                }
+            }
+
+         
+        }
+
+ 
+
+        public static Folder CreateFolder(Web web, string listTitle, string fullFolderUrl)
+        {
+            if (string.IsNullOrEmpty(fullFolderUrl))
+                throw new ArgumentNullException("fullFolderUrl");
+            var list = web.Lists.GetByTitle(listTitle);
+            return CreateFolderInternal(web, list.RootFolder, fullFolderUrl);
+        }
+
+
+        private static Folder CreateFolderInternal(Web web, Folder parentFolder, string fullFolderUrl)
+        {
+            var folderUrls = fullFolderUrl.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            string folderUrl = folderUrls[0];
+            var curFolder = parentFolder.Folders.Add(folderUrl);
+            web.Context.Load(curFolder);
+            web.Context.ExecuteQuery();
+
+            if (folderUrls.Length > 1)
+            {
+                var subFolderUrl = string.Join("/", folderUrls, 1, folderUrls.Length - 1);
+                return CreateFolderInternal(web, curFolder, subFolderUrl);
+            }
+            return curFolder;
+        }
+
+
         private string[] GetComplexityValues()
         {
             return ReadSetting("ComplexityValues").Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries);            
@@ -282,62 +363,58 @@ namespace PatNet.Lib
             }
         }
 
-        //private void SaveImagesToDocX(string path, string patentNumber, string outputDirectory)
-        //{
-        //    using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
-        //        {
-        //            // Add a main document part. 
-        //            MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
-
-        //            // Create the document structure and add some text.
-        //            mainPart.Document = new Document();
-        //            Body body = mainPart.Document.AppendChild(new Body());
-        //            Paragraph para = body.AppendChild(new Paragraph());
-        //            Run run = para.AppendChild(new Run());
-        //            run.AppendChild(new Text("Create text in body - CreateWordprocessingDocument"));
-        //        }
-
-        //}
-
-        //public static void SaveUsingDocxNovacode(string path, string patentNumber, string contents )
-        //{
-        //    using (DocX document = DocX.Create("Test.docx"))
-        //   {
-        //        // Add a new Paragraph to the document.
-        //       Novacode.Paragraph p = document.InsertParagraph();
+        public void WriteDocument(string outputPath, string content)
+        {
+            using (var document = WordprocessingDocument.Create(
+                outputPath, WordprocessingDocumentType.Document))
+            {
+                document.AddMainDocumentPart();
+                var run = new Run();
+                parseTextForOpenXML(run,content );
+                document.MainDocumentPart.Document = new Document(
+                    new Body(new Paragraph( run )));
+                document.Close();
                 
-        //        // Append some text.
-        //        p.Append(contents).Font(new System.Drawing.FontFamily("Arial Black"));
-      
-        //        // Save the document.
-        //        document.Save();
-        //   }
+            }
 
+        }
 
-        //}
+        private void parseTextForOpenXML(Run run, string textualData)
+        {
+            string[] newLineArray = {Environment.NewLine};
+            string[] textArray = textualData.Split(newLineArray, StringSplitOptions.None);
 
-        //public static void SaveImageUsingNovaCode(string inputPath, string patentNumber, string outputPath)
-        //{
-        //    var imagePath = inputPath + "\\" + patentNumber;
+            bool first = true;
 
-        //    using (DocX document = DocX.Create(outputPath + "\\" + patentNumber + "_img.doc"))
-        //    {
-        //        foreach (string filename in Directory.GetFiles(imagePath))
-        //        {
-        //            // Add a new Paragraph to the document.
-        //            Novacode.Paragraph p = document.InsertParagraph();
-        //            var image = document.AddImage(filename);
-        //            var pic = image.CreatePicture();
+            foreach (string line in textArray)
+            {
+                if (! first)
+                {
+                    run.Append(new Break());
+                }
 
-        //            p.InsertPicture(image.CreatePicture(11, 8));
+                first = false;
 
-        //        }
+                Text txt = new Text();
+                txt.Text = line;
+                run.Append(txt);
+            }
+        }
 
-        //        // Save the document.
-        //        document.Save();
-        //    }
+        public void CopyFileToWordDocument(string filename, string outputPath)
+        {
+            var amdContents = File.ReadAllText(filename);
 
-        //}
+            using (var document = WordprocessingDocument.Create(
+                outputPath, WordprocessingDocumentType.Document))
+            {
+                document.AddMainDocumentPart();
+                document.MainDocumentPart.Document = new Document(
+                    new Body(new Paragraph(new Run(new Text(amdContents)))));
+                document.Close();
+
+            }
+        }
 
         public void SaveImagesUsingOOXML(string inputPath, string patentNumber, string outputPath)
         {

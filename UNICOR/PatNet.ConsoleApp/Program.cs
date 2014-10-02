@@ -34,6 +34,12 @@ namespace PatNet.ConsoleApp
             // INPUT, OUTPUT, BACKUP, TEMP
             //setup environment      
             string workingDir = ReadSetting("WorkingDirectory");
+            string sharePointServerPath = ReadSetting("SharepointPath");
+            string sharePointListName = ReadSetting("SharepointListName");
+
+            string CRMServerName = ReadSetting("CRMServerName");
+            string CRMOrgName = ReadSetting("CRMOrgName");
+
             CreateDirectory(workingDir);
             Directory.SetCurrentDirectory(workingDir);            
             CreateDirectory("Input");
@@ -84,6 +90,9 @@ namespace PatNet.ConsoleApp
                     {
                         Trace.WriteLine("Shipment was valid! Processing!", TraceLogLevels.INFO);
                         shipment.Process(path, outputPath);
+                        shipment.Send(sharePointServerPath, sharePointListName, outputPath);
+                        PatnetCRMHelper crm = new PatnetCRMHelper();
+                        crm.NotifyCRM(CRMServerName,CRMOrgName, number);                        
                     }
                     else
                     {
@@ -95,51 +104,7 @@ namespace PatNet.ConsoleApp
                 }
             }
 
-            //fw.Start();
-
-            //while (fw.WatcherState != FolderWatcher.WatcherStates.COMPLETED)
-            //{
-
-
-            //}
-
-
-            //while (fw.WatcherState == FolderWatcher.WatcherStates.WAITING)
-            //{
-            //}
-
-
-            ////got something
-
-            //while (fw.WatcherState == FolderWatcher.WatcherStates.COPYING)
-            //{
-            //}
-
-            ////done copying
-
-            ////get shipment
-            //var shipmentNum = fw.LastShipmentNumber;
-
           
-
-
-
-
-            //var number = "4853b";
-            //var path = ReadSetting("RootPath");
-            ////var path = @"E:\UNICOR\Information for Jonathan\export\4853";
-            ////var path = @"C:\DEV\UNICOR\Information for Jonathan\4853";
-
-            //Trace.WriteLine("Recv'd Shipment number " + number, TraceLogLevels.INFO);
-            //Trace.WriteLine("Processing directory: " + path, TraceLogLevels.INFO);
-
-            ////FolderWatcher fw = new FolderWatcher(@"C:\Temp\input", 500);
-            ////fw.Watch();
-            //Shipment shipment = new Shipment(path, number);            
-            //if (shipment.Validate(path))
-            //{
-            //    shipment.Process();
-            //}
 
             Console.WriteLine("Press any key to Exit");
             Console.ReadKey();

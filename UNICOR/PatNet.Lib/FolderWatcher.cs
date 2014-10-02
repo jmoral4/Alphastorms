@@ -59,7 +59,7 @@ namespace PatNet.Lib
             _fsw.EnableRaisingEvents = false;
             _dsw.EnableRaisingEvents = true;
             _processingTimer.Enabled = false;
-            WatcherState = WatcherStates.COMPLETED;
+            WatcherState = WatcherStates.INIT;
         }
 
         public bool IsReceiving { get { return _receiving; } }
@@ -67,13 +67,18 @@ namespace PatNet.Lib
 
         private void CheckIfDone(object source, ElapsedEventArgs args)
         {
-            _keepAlive -= interval;
-            if (_keepAlive <= 0)
+            
+            if (WatcherState == WatcherStates.COPYING)
             {
-                //haven't gotten an update in 2 minutes, assume copying is completed
-                _receiving = false;
-                Trace.WriteLine("Nothing Heard! all done.", TraceLogLevels.INFO);
-                WatcherState = WatcherStates.COMPLETED;                
+                _keepAlive -= interval;
+                if (_keepAlive <= 0)
+                {
+                    
+                    //haven't gotten an update in 2 minutes, assume copying is completed
+                    _receiving = false;
+                    Trace.WriteLine("Nothing Heard! all done.", TraceLogLevels.INFO);
+                    WatcherState = WatcherStates.COMPLETED;
+                }
             }
         }
 
