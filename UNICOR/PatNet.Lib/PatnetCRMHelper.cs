@@ -15,14 +15,14 @@ namespace PatNet.Lib
     {
 
 
-        public void NotifyCRM(string CRMServerName, string orgName, string shipmentNumber)
+        public void NotifyCRM(string CRMServerName, string orgName, string shipmentNumber, string CRMAccountName, string CRMPassword)
         {
             IOrganizationService _service;
             OrganizationServiceProxy _serviceProxy;
             ServerConnection serverConnect = new ServerConnection();
             ServerConnection.Configuration config =
-                serverConnect.GetServerConfigurationNew(CRMServerName, orgName, "username",
-                    "password", false);
+                serverConnect.GetServerConfigurationNew(CRMServerName, orgName, CRMAccountName,
+                   CRMPassword, false);
 
             using (_serviceProxy = ServerConnection.GetOrganizationProxy(config))
 
@@ -40,79 +40,92 @@ namespace PatNet.Lib
             }
         }
 
-//        public void CheckStatus()
-//        {
-//            string fetchXml = string.Format(@"
-//
-//                        <fetch mapping='logical' count='1'>
-//
-//                           <entity name='unicor_patent'>
-//
-//                              <all-attributes />
-//
-//                              <filter type='and'>
-//
-//                                 <condition attribute='unicor_patentstatus' operator='eq' value='{0}' />
-//
-//                              </filter>
-//
-//                           </entity>
-//
-//                        </fetch>
-//
-//                        ", 456080003);
+        public void CheckStatus(string CRMServerName, string orgName, string CRMAccountName, string CRMPassword)
+        {
+            string fetchXml = string.Format(@"
 
-//            //Patent Status is Completed: 456080003
+                        <fetch mapping='logical' count='1'>
 
-//            IOrganizationService service;
+                           <entity name='unicor_patent'>
 
-//            List<Entity> patents = ((EntityCollection)service.RetrieveMultiple(new FetchExpression(fetchXml))).Entities.ToList();
+                              <all-attributes />
 
-//            foreach (Entity patent in patents)
-//            {
+                              <filter type='and'>
 
-//                //You can use the relative URL or the SharePoint ID to access the patent folder.  If you would like to loop through the patent files in CRM I can send that as well
+                                 <condition attribute='unicor_patentstatus' operator='eq' value='{0}' />
 
-//                if (patent.Attributes.Contains("unicor_sp_relativeurl"))
-//                {
+                              </filter>
 
-//                    //Go to Sharepoint folder and get the docs
+                           </entity>
 
-//                    string test = (string)patent.Attributes["unicor_sp_relativeurl"];
+                        </fetch>
 
-//                }
+                        ", 456080003);
 
-//                //OR You can use the ID instead of the URL, but you don't need both
+            //Patent Status is Completed: 456080003
+             OrganizationServiceProxy _serviceProxy;
+            ServerConnection serverConnect = new ServerConnection();
+            ServerConnection.Configuration config =
+                serverConnect.GetServerConfigurationNew(CRMServerName, orgName, CRMAccountName,
+                   CRMPassword, false);
+            IOrganizationService service;
+            using (_serviceProxy = ServerConnection.GetOrganizationProxy(config))
 
-//                if (patent.Attributes.Contains("unicor_sp_id"))
-//                {
+            {
+                _serviceProxy.ServiceConfiguration.CurrentServiceEndpoint.Behaviors.Add(new ProxyTypesBehavior());
+                _serviceProxy.EnableProxyTypes();
+                service = (IOrganizationService) _serviceProxy;
 
-//                    //Go to Sharepoint folder
+                List<Entity> patents =
+                    ((EntityCollection) service.RetrieveMultiple(new FetchExpression(fetchXml))).Entities.ToList();
 
-//                }
+                foreach (Entity patent in patents)
+                {
 
+                    //You can use the relative URL or the SharePoint ID to access the patent folder.  If you would like to loop through the patent files in CRM I can send that as well
 
+                    if (patent.Attributes.Contains("unicor_sp_relativeurl"))
+                    {
+                        string spUrl = (string) patent.Attributes["unicor_sp_relativeurl"];
+                        Entity pt = new Entity();
 
-//                //He doesn't know what the Delivered options are for so for now I'm using that to assume that's when they've been put on the server
+                        pt.LogicalName = "unicor_patent";
 
-//                //Delivered w/out Error: 456080007
+                        pt.Attributes["unicor_patentstatus"] = new OptionSetValue(456080007);
+                        //to set the status to delivered with/out error
 
-//                //Delivered w/Error: 456080005
+                        service.Update(pt);
 
 
 
-//                //This will call the update method.  We're instantiating a new Entity because the system will try to update whatever fields are in the object so I tend to only include the fields I want to update
+                    }
 
-//                Entity pt = new Entity();
+                    //OR You can use the ID instead of the URL, but you don't need both
 
-//                pt.LogicalName = "unicor_patent";
+                    if (patent.Attributes.Contains("unicor_sp_id"))
+                    {
 
-//                pt.Attributes["unicor_patentstatus"] = new OptionSetValue(456080007); //to set the status to delivered with/out error
+                        //Go to Sharepoint folder
 
-//                service.Update(pt);
+                    }
 
-//            }
-//        }
+
+
+                    //He doesn't know what the Delivered options are for so for now I'm using that to assume that's when they've been put on the server
+
+                    //Delivered w/out Error: 456080007
+
+                    //Delivered w/Error: 456080005
+
+
+
+                    //This will call the update method.  We're instantiating a new Entity because the system will try to update whatever fields are in the object so I tend to only include the fields I want to update
+
+
+
+                }
+            }
+        }
 
 
     }

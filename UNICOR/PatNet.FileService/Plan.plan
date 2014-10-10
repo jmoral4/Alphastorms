@@ -1,3 +1,9 @@
+Abstract addition - 
+Place files in temp
+OCntact CRM, get files, place in output, delete from input on success
+convert to .T1
+stub to call character count
+
 
 
 FolderWatcher
@@ -43,8 +49,8 @@ $psversiontable
 //to set a path manually
 set-location 
 
-$siteUrl = "http://sharepoint/schools/test" 
-$listName = "Students Picture Library"  [system.reflection.assembly]::LoadWithPartialName("Microsoft.Sharepoint") 
+$siteUrl = "http://sp.services.gov/" 
+$listName = "Shipment"  [system.reflection.assembly]::LoadWithPartialName("Microsoft.Sharepoint") 
 $site = New-Object Microsoft.SharePoint.SPSite($siteUrl) 
 $web = $site.OpenWeb()
 $list = $web.Lists[$listName] 
@@ -66,6 +72,75 @@ foreach ($file in $files) {
  {
  $site.Dispose()
  }
+
+
+ Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue
+
+  
+
+#Get the Web
+
+$web=Get-SPWeb "http://sharepoint.company.com"
+
+#Get the List/Library
+
+$list=$web.Lists.TryGetList("SalesList")
+
+ 
+
+if($list)  #Check If List exists!
+
+ {
+
+  # Create a Folder "Sales Documents"
+
+  # Check Folder Doesn't exists in the Library!
+
+  $folder = $list.ParentWeb.GetFolder($list.RootFolder.Url + "/" +"Sales List");
+
+ 
+
+  if ($folder.Exists -eq $false)
+
+   {
+
+    #Create a Folder
+
+    $folder = $list.AddItem("", [Microsoft.SharePoint.SPFileSystemObjectType]::Folder, "Sales Sub-Item")
+
+    $folder.Update();
+
+   }
+
+    
+
+  #Create a Sub-Folder "APAC Sales Documents" inside "Sales Documents"
+
+  #Check if sub-folder doesn't exists already
+
+  $Subfolder = $list.ParentWeb.GetFolder($folder.URL + "/" + "APAC Sales Documents");
+
+  if ($Subfolder.Exists -eq $false)
+
+   {
+
+    #Create a Sub-Folder Inside "Sales Documents"
+
+    $Subfolder = $list.AddItem($folder.URL, [Microsoft.SharePoint.SPFileSystemObjectType]::Folder, "APAC Sales Documents")
+
+    $Subfolder.Update();
+
+   }
+
+ }
+
+
+Read more: http://www.sharepointdiary.com/2012/10/create-folders-sub-folders-programmatically.html#ixzz3Fl1d7LL4
+
+
+
+
+
 
 In order to use this:
 01.Save as as .ps1 file in the same folder as the files to upload. 

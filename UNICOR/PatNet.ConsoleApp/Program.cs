@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,17 @@ namespace PatNet.ConsoleApp
 
             string CRMServerName = ReadSetting("CRMServerName");
             string CRMOrgName = ReadSetting("CRMOrgName");
+
+            string CRMPassword = ReadSetting("CRMPassword");
+            string CRMAccountName = ReadSetting("CRMAccountName");
+
+
+            string SPPassword = ReadSetting("SharePointPassword");
+            string SPAccount = ReadSetting("SharePointAccountName");
+            string SPLocation = ReadSetting("SharePointMappedLocation");
+
+           
+
 
             CreateDirectory(workingDir);
             Directory.SetCurrentDirectory(workingDir);            
@@ -90,16 +102,33 @@ namespace PatNet.ConsoleApp
                     {
                         Trace.WriteLine("Shipment was valid! Processing!", TraceLogLevels.INFO);
                         shipment.Process(path, outputPath);
-                        shipment.Send(sharePointServerPath, sharePointListName, outputPath);
-                        PatnetCRMHelper crm = new PatnetCRMHelper();
-                        crm.NotifyCRM(CRMServerName,CRMOrgName, number);                        
+                        Trace.WriteLine("Sending Shipment to SharePoint", TraceLogLevels.INFO);
+                        try
+                        {
+                            shipment.Send(sharePointServerPath, sharePointListName, outputPath, SPAccount, SPPassword);
+                            PatnetCRMHelper crm = new PatnetCRMHelper();
+                            crm.NotifyCRM(CRMServerName, CRMOrgName, number, CRMAccountName, CRMPassword);     
+                        }
+                        catch (Exception ex)
+                        {
+                            Trace.WriteLine("Error Sending Shipment!", TraceLogLevels.ERROR);
+                            Trace.WriteLine(ex.Message, TraceLogLevels.ERROR);
+                            Trace.WriteLine(ex.StackTrace, TraceLogLevels.ERROR);
+                            if( ex.InnerException != null )
+                                Trace.WriteLine("Inner: " + ex.InnerException, TraceLogLevels.ERROR);
+                        }
+
+                      
+                                          
                     }
                     else
                     {
                         Trace.WriteLine("Shipment was invalid!", TraceLogLevels.ERROR);
                         
                     }
-                    
+
+                  
+
                     fw.WatcherState = FolderWatcher.WatcherStates.INIT;
                 }
             }

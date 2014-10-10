@@ -246,9 +246,12 @@ namespace Microsoft.Crm.Sdk.Samples
             credentials.UserName.Password = password;
             credentials.Windows.ClientCredential.UserName = username;
             credentials.Windows.ClientCredential.Password = password;
-            config.Credentials.Windows.ClientCredential =  CredentialCache.DefaultNetworkCredentials;
+
+            //ClientCredentials credentials2 = new ClientCredentials();
+            //credentials2.Windows.ClientCredential = System.Net.CredentialCache.DefaultNetworkCredentials;
+            config.Credentials = credentials;            
             //config.Credentials = CredentialCache.DefaultCredentials;
-           
+                             
             config.OrganizationName = orgname;
 
             //Retrieve the Organization Address

@@ -6,9 +6,12 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Security.Policy;
+using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Web;
 using JetBrains.Annotations;
 using Microsoft.SharePoint.Client;
 using PatNet.Lib;
@@ -274,21 +277,77 @@ namespace PatNet.Lib
             _shipmentState = ShipmentStates.COMPLETED;
         }
 
-        public void Send(string sharepointServerPath,  string listName, string folderPath)
+       
+        
+
+        public void Send(string sharepointMappedLocation, string localFolder)
+        {
+            Trace.WriteLine("Connecting to mapped location", TraceLogLevels.DEBUG);
+            DirectoryInfo di = new DirectoryInfo(localFolder);
+            DirectoryInfo remoteFolder = new DirectoryInfo(sharepointMappedLocation);
+            Trace.WriteLine("Mapped folders - getting directories", TraceLogLevels.DEBUG);
+            var parent = di.Name;
+            var children = di.GetDirectories();
+
+            remoteFolder =  remoteFolder.CreateSubdirectory(parent);
+            Trace.WriteLine("Created parent folder", TraceLogLevels.DEBUG);
+            //create new children
+            foreach (var child in children)
+            {
+               var temp = remoteFolder.CreateSubdirectory(child.Name);
+               Trace.WriteLine("created child folder " + child.Name, TraceLogLevels.DEBUG);
+                var files = child.GetFiles();
+                //copy files from folder to remote directory
+                Trace.WriteLine("Copying files", TraceLogLevels.DEBUG);
+                foreach (var file in files)
+                {
+                    file.CopyTo(temp.FullName + "/" + file.Name);
+                }
+                Trace.WriteLine("all files n child copied", TraceLogLevels.DEBUG);
+            }
+            Trace.WriteLine("All folders copied", TraceLogLevels.DEBUG);
+      
+        }
+
+        public void Send(string sharepointServerPath,  string listName, string folderPath, string username = "", string password = "")
         {
             using (var clientContext = new ClientContext(sharepointServerPath))
             {
-                clientContext.Credentials = CredentialCache.DefaultCredentials;
-                
+                if (username == string.Empty && password == string.Empty)
+                {
+                    Trace.WriteLine("SharePoint: No credentials provided, using default user credentials", TraceLogLevels.INFO);
+                    clientContext.Credentials = CredentialCache.DefaultCredentials;
+                }
+                else
+                {
+                    Trace.WriteLine("SharePoint: Using App.config credentials. ", TraceLogLevels.INFO);
+                    System.Net.NetworkCredential n = new NetworkCredential(username, password);
+                    clientContext.Credentials = n;
+                }
                 DirectoryInfo di = new DirectoryInfo(folderPath);
                 var parent = di.Name;
                 var children = di.GetDirectories();
-                //create parent folder
 
-                clientContext.Credentials = CredentialCache.DefaultCredentials;
+                Trace.WriteLine("Creating Parent Folder for list " + listName, TraceLogLevels.ERROR);
+                //create parent folder
+//                CreateFolder(clientContext.Web, listName, parent);
+                var library = clientContext.Web.Lists.GetByTitle(listName);
+                var p = library.RootFolder.Folders.Add(parent);
+                clientContext.Web.Context.Load(p);
+                clientContext.Web.Context.ExecuteQuery();
+                Trace.WriteLine("Created Parent Folder successfully within " + listName, TraceLogLevels.ERROR);
+
+
+
+
+                //create child folders
                 foreach (var child in children)
                 {
-                    var folder = CreateFolder(clientContext.Web, "Shared Documents", parent + "/" + child);
+                    var r = p.Folders.Add(child.Name);
+                    clientContext.Web.Context.Load(r);
+                    clientContext.Web.Context.ExecuteQuery();
+                   // var folder = CreateFolder(clientContext.Web, listName, parent + "/" + child.Name);
+                    Trace.WriteLine("Created child folder " + child.Name, TraceLogLevels.ERROR);
                 }
                  
 
@@ -300,13 +359,29 @@ namespace PatNet.Lib
                     {
                         using (var fs = new FileStream(file.FullName, FileMode.Open))
                         {
-                            var list = clientContext.Web.Lists.GetByTitle("Shared Documents");
-                            clientContext.Load(list.RootFolder);
-                            clientContext.ExecuteQuery();
-                            var fileUrl = String.Format("{0}/{1}/{2}/{3}", list.RootFolder.ServerRelativeUrl, parent,
-                                childDirectory.Name, file.Name);
+                            try
+                            {
+                                var list = clientContext.Web.Lists.GetByTitle(listName);
+                                clientContext.Load(list.RootFolder);
+                                clientContext.ExecuteQuery();
+                                var fileUrl = String.Format("{0}/{1}/{2}/{3}", list.RootFolder.ServerRelativeUrl, parent,
+                                    childDirectory.Name, file.Name);
+                                Trace.WriteLine("Uploading file to SharePoint: " + fileUrl);
+                                Microsoft.SharePoint.Client.File.SaveBinaryDirect(clientContext, fileUrl, fs, true);
+                            }
+                            catch (Exception ex)
+                            {
+                                Trace.WriteLine("Failed copying file to SharePoint", TraceLogLevels.ERROR);
+                                Trace.WriteLine(ex.Message, TraceLogLevels.ERROR);
+                                if (ex.InnerException != null)
+                                {
+                                    Trace.WriteLine(ex.InnerException.Message, TraceLogLevels.ERROR);
+                                }
+                            
+                                Trace.WriteLine(ex.StackTrace, TraceLogLevels.ERROR);
+                                
+                            }
 
-                            Microsoft.SharePoint.Client.File.SaveBinaryDirect(clientContext, fileUrl, fs, true);
                         }
                     }
                 }
@@ -331,13 +406,29 @@ namespace PatNet.Lib
             var folderUrls = fullFolderUrl.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             string folderUrl = folderUrls[0];
             var curFolder = parentFolder.Folders.Add(folderUrl);
-            web.Context.Load(curFolder);
-            web.Context.ExecuteQuery();
 
-            if (folderUrls.Length > 1)
+            try
             {
-                var subFolderUrl = string.Join("/", folderUrls, 1, folderUrls.Length - 1);
-                return CreateFolderInternal(web, curFolder, subFolderUrl);
+              
+                web.Context.Load(curFolder);
+                web.Context.ExecuteQuery();
+
+                if (folderUrls.Length > 1)
+                {
+                    var subFolderUrl = string.Join("/", folderUrls, 1, folderUrls.Length - 1);
+                    return CreateFolderInternal(web, curFolder, subFolderUrl);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Failed creating folder: " + fullFolderUrl, TraceLogLevels.ERROR );
+                Trace.WriteLine(ex.Message, TraceLogLevels.ERROR);
+                if (ex.InnerException != null)
+                {
+                    Trace.WriteLine(ex.InnerException.Message, TraceLogLevels.ERROR);
+                }
+                Trace.WriteLine(ex.StackTrace, TraceLogLevels.ERROR);
             }
             return curFolder;
         }
@@ -431,6 +522,9 @@ namespace PatNet.Lib
                     
                  wordDocument.Close();
                 }
+
+            
+
             foreach (string filename in Directory.GetFiles(imagePath))
             {
                 InsertAPicture(outputDocument, filename);
@@ -441,97 +535,35 @@ namespace PatNet.Lib
 
         public static void InsertAPicture(string document, string fileName)
         {
-            using (WordprocessingDocument wordprocessingDocument =
-                WordprocessingDocument.Open(document, true))
+            try
             {
-                MainDocumentPart mainPart = wordprocessingDocument.MainDocumentPart;
+                using (WordprocessingDocument wordprocessingDocument =
+                    WordprocessingDocument.Open(document, true))
+                {
+                    MainDocumentPart mainPart = wordprocessingDocument.MainDocumentPart;
 
-               
 
-                      ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Jpeg);
 
-                    using (FileStream stream = new FileStream(fileName, FileMode.Open))
+                    ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Jpeg);
+
+                    using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         imagePart.FeedData(stream);
+                        stream.Close();
                     }
 
                     AddImageToBody(wordprocessingDocument, mainPart.GetIdOfPart(imagePart), fileName);
 
-
-
-
-
-               
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine("Error writing images docX!", TraceLogLevels.ERROR);
+                Trace.WriteLine(ex.Message, TraceLogLevels.ERROR);
+                Trace.WriteLine(ex.StackTrace, TraceLogLevels.ERROR);
             }
         }
 
-        private static void AddImageToBody2(WordprocessingDocument wordDoc, string relationshipId)
-        {
-            // Define the reference of the image.
-            var element =
-                 new Drawing(
-                     new DW.Inline(
-                         new DW.Extent() { Cx = 990000L, Cy = 792000L },
-                         new DW.EffectExtent()
-                         {
-                             LeftEdge = 0L,
-                             TopEdge = 0L,
-                             RightEdge = 0L,
-                             BottomEdge = 0L
-                         },
-                         new DW.DocProperties()
-                         {
-                             Id = (UInt32Value)1U,
-                             Name = "Picture 1"
-                         },
-                         new DW.NonVisualGraphicFrameDrawingProperties(
-                             new A.GraphicFrameLocks() { NoChangeAspect = true }),
-                         new A.Graphic(
-                             new A.GraphicData(
-                                 new PIC.Picture(
-                                     new PIC.NonVisualPictureProperties(
-                                         new PIC.NonVisualDrawingProperties()
-                                         {
-                                             Id = (UInt32Value)0U,
-                                             Name = "New Bitmap Image.jpg"
-                                         },
-                                         new PIC.NonVisualPictureDrawingProperties()),
-                                     new PIC.BlipFill(
-                                         new A.Blip(
-                                             new A.BlipExtensionList(
-                                                 new A.BlipExtension()
-                                                 {
-                                                     Uri =
-                                                       "{28A0092B-C50C-407E-A947-70E740481C1C}"
-                                                 })
-                                         )
-                                         {
-                                             Embed = relationshipId,
-                                             CompressionState =
-                                             A.BlipCompressionValues.Print
-                                         },
-                                         new A.Stretch(
-                                             new A.FillRectangle())),
-                                     new PIC.ShapeProperties(
-                                         new A.Transform2D(
-                                             new A.Offset() { X = 0L, Y = 0L },
-                                             new A.Extents() { Cx = 990000L, Cy = 792000L }),
-                                         new A.PresetGeometry(
-                                             new A.AdjustValueList()
-                                         ) { Preset = A.ShapeTypeValues.Rectangle }))
-                             ) { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" })
-                     )
-                     {
-                         DistanceFromTop = (UInt32Value)0U,
-                         DistanceFromBottom = (UInt32Value)0U,
-                         DistanceFromLeft = (UInt32Value)0U,
-                         DistanceFromRight = (UInt32Value)0U,
-                         EditId = "50D07946"
-                     });
-
-            // Append the reference to body, the element should be in a Run.
-            wordDoc.MainDocumentPart.Document.Body.AppendChild(new Paragraph(new Run(element)));
-        }
 
         private static void AddImageToBody(WordprocessingDocument wordDoc, string relationshipId, string fileName)
         {
@@ -621,36 +653,6 @@ namespace PatNet.Lib
 
 
 
-        private void SaveImagesToDoc(string path, string patentNumber, string outputDirectory)
-        {
-            Microsoft.Office.Interop.Word.Application WordApp = new Microsoft.Office.Interop.Word.Application();
-            // now creating new document.
-            WordApp.Documents.Add();
-            // see word file behind your program
-            WordApp.Visible = false;
-            // get the reference of active document
-            Microsoft.Office.Interop.Word.Document doc = WordApp.ActiveDocument;
-            var imagePath = path + "\\" + patentNumber;
-            //get image directory associated..
-            // iterating process for adding all images which is selected by filedialog
-            foreach (string filename in Directory.GetFiles(imagePath))
-            {
-                // now add the picture in active document reference
-                doc.InlineShapes.AddPicture(filename, Type.Missing, Type.Missing, Type.Missing);
-            }
-
-            // file is saved.
-            doc.SaveAs(outputDirectory + "\\" + patentNumber + "_img.doc", Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                Type.Missing, Type.Missing, Type.Missing);
-            // application is now quit.
-            WordApp.Quit(Type.Missing, Type.Missing, Type.Missing);
-        }
-
-        public void ProcessAmendmentFiles()
-        {
-            //create a shipment
-
-        }
+     
     }
 }
