@@ -10,3 +10,9 @@ C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\bin\StockBot.pdb
 C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.csprojResolveAssemblyReference.cache
 C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.dll
 C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.pdb
+\\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\bin\StockBot.dll.config
+\\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\bin\StockBot.dll
+\\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\bin\StockBot.pdb
+\\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.csprojResolveAssemblyReference.cache
+\\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.dll
+\\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.pdb

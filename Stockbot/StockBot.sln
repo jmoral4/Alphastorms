@@ -1,9 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockBot", "StockBot.csproj", "{B3DA359B-1BFD-48BF-958A-836430A65EC7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stockbot.Processor", "..\Stockbot.Processor\Stockbot.Processor.csproj", "{D4E02E60-68DC-4718-9998-043B086ABCC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlAgilityPack.AddOns.FormProcessor", "..\FormProcessor\HtmlAgilityPack.AddOns.FormProcessor.csproj", "{CFA06367-2490-4EDC-96E9-57747415CD58}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{576878B7-D6BE-42C9-85A7-31570D1D75BD}"
+	ProjectSection(SolutionItems) = preProject
+		Plan.plan = Plan.plan
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +28,10 @@ Global
 		{D4E02E60-68DC-4718-9998-043B086ABCC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4E02E60-68DC-4718-9998-043B086ABCC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4E02E60-68DC-4718-9998-043B086ABCC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFA06367-2490-4EDC-96E9-57747415CD58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFA06367-2490-4EDC-96E9-57747415CD58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFA06367-2490-4EDC-96E9-57747415CD58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFA06367-2490-4EDC-96E9-57747415CD58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

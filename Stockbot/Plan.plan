@@ -1,0 +1,26 @@
+
+Dev Plan:
+
+AI_Core
+  XBrokerageProcessor -> handles getting specific data related to strategies from a given brokerage
+
+  XStrategy -> Takes input and determines if an action/notification should be taken
+
+  SanityChecks -> Checks Yahoo for comparable data
+
+  SQL Azure -> stores all of the values we'd normally store in Excel --> what are the current positions, values, strategy for entry, target exit, last action taken, next time to check
+
+
+StockBot AI
+	Data Collection:
+		XBrokerageProcessor
+		YahooFinanceProcessor
+
+	Data Aggregation:
+		SQL Azure Table(s)
+
+	Strategy:
+		Strategy to determine action/notification
+		Fail-safe strategy to validate actions and fallback actions based on weights
+		Danger Criteria i.e., when to abort/liquidate for safety
+		
