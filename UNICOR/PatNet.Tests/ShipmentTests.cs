@@ -8,6 +8,7 @@ namespace PatNet.Tests
     [TestClass]
     public class ShipmentTests
     {
+        // tests are presently disabled
         readonly string testPath = System.Environment.CurrentDirectory + @"\4585\";
         [TestMethod]
         [ExpectedException(typeof(ShipmentDirectoryNotFoundException))]

@@ -1,14 +1,6 @@
-WWD:
+﻿WWD:
 
 M-> Looking through logs to analyze how Merge/FileControl Operate,  KickOff Meeting, CRM architecture planning and discussion, review of OWA capabilities (also findings), review with Kim of Existing PatNet system, consolidation of notes into document
-anbattag
-IO: 1503252
-Microsoft Corporation
-Attn: Expense Reports
-One Microsoft Way
-Redmond, WA 98052
-
-
 
 source code for executables
 parameters being supplied to executable when it's launched from toolbar
@@ -54,26 +46,12 @@ built on vmx architechture by laura.
 
 http://planningservices.partners.extranet.microsoft.com/en/sdps/Pages/SharePoint-2013.aspx
 
-https://sposites.sharepoint.com/sites/bizdesk/sdmplus/SitePages/index.aspx
-
-https://campus.partners.extranet.microsoft.com/Pages/Default.aspx
+x
 
 dynamics key
 724KNKQH62J92M4PWQCQH2XWH
 
 NVGJW9BF9K6CPKPKFWM8XWYR2
-
-BlackHat Password
-767yuKHwkj@uyta$87tDsAg&dyuatd!u6iUg
-
-lias786XVkjh9@SUy!sa8
-
-724KNKQH62J92M4PWQCQH2XWH
-
-WORKGROUP VERSION
-NVGJW9BF9K6CPKPKFWM8XWYR2
-
-https://microsoft-my.sharepoint.com/personal/jomorale_microsoft_com/Documents/Uploads
 
 Done:
    Extracting CRM integration points and .NET possible development modules
