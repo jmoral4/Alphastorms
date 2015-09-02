@@ -16,3 +16,11 @@ C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.pdb
 \\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.csprojResolveAssemblyReference.cache
 \\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.dll
 \\linkedsolutions.corp\usershares\usmd\Jonathan.Morales\Documents\GitHub\Alphastorms\Stockbot\obj\Debug\StockBot.pdb
+C:\Github\Alphastorms\Stockbot\bin\StockBot.dll.config
+C:\Github\Alphastorms\Stockbot\bin\StockBot.dll
+C:\Github\Alphastorms\Stockbot\bin\StockBot.pdb
+C:\Github\Alphastorms\Stockbot\bin\HtmlAgilityPack.dll
+C:\Github\Alphastorms\Stockbot\bin\HtmlAgilityPack.xml
+C:\Github\Alphastorms\Stockbot\obj\Debug\StockBot.csprojResolveAssemblyReference.cache
+C:\Github\Alphastorms\Stockbot\obj\Debug\StockBot.dll
+C:\Github\Alphastorms\Stockbot\obj\Debug\StockBot.pdb

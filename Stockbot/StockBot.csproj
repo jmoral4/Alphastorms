@@ -72,7 +72,7 @@
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\carousel.css" />
     <Content Include="default.aspx" />
-    <Content Include="default.html" />
+    <Content Include="bak.html" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="img\azure.png" />
     <Content Include="img\btn.png" />
