@@ -25,18 +25,31 @@ Pages
 	Public 
 		Landing Page
 		Subscription Page
-		About us page
-	Private
-		Bot Landing
-		Bot Page
+		About Stock-Bot page
+		Payment Processing
+		Login with Google/Facebook/StockTwits
+
+	Private		
+		Bots Landing  ( up to 12 major markets)
+		Bot Page - details, performance, etc
+		VERA - Algorithm: input stock, it will calculate whether it believes the stock is a buy/sell/etc
 		Blog
-		Video Analysis
-		Feedback
-		Teaching a Pro
+		Video Analysis		
 		Teaching a Newbie
+		Feedback		
+		Contact Us/ Support Ticket - (only for full subscribers)
+		Manage Account - Subscription/password/etc/password reset/forgot/accountname forgot(just use email)
+
+futurE?
+		Beat the Bot - sponsored trader tries to beat the bot
+		The consensus - consensus views compared to stock-bot
+		
+
 
 notes:
 	https://stripe.com/us/pricing  - credit card processing
+	https://www.browserstack.com/   - test on safari/android/chrome/FF/IE/etc
+	http://finviz.com/export.ashx?v=152&f=idx_sp500&ft=1&ta=1&p=d&r=1&c=1   // downloads a list of all members of S&P 500
 	custom charts
 	predictors and direction indicators
 	dark backcolor?
@@ -48,7 +61,12 @@ notes:
 	Bing Analytics  (async)
 	Requires that I update each bots analysis in the evening and update the data that drives everything in the evening. 
 	- bot would use that new update on the appropriate day
-	Google Phone number with answering machine (obviously)
+	
+	Google Phone number with answering machine (obviously) (probably not used)
+	FinViz API?
+	using  "v=152&t=MSFT&c=1,65,66” will get you ticker, price, change for just MSFT
+		    v=152&t=MSFT,PCLN&c=1,65,66 example for 2 tickers
+			https://elite.finviz.com/screener.ashx?v=171&s=ta_p_channelup&f=ind_stocksonly,sh_price_o2,ta_pattern_channelup2,ta_sma50_pa10&ft=3
 
 
 
