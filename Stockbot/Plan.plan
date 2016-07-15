@@ -1,5 +1,58 @@
+MODERN DEV PLAN:
 
-Dev Plan:
+StockBot Analysis
+
+Bots
+	Long-term Bots
+		Heaven-Hell Bot:uses heaven and hell tracker
+		Speculative Future Bot:Shows trends derived from ED1/SPX correlation algorithm
+
+	Mid-term Bots
+		EW Bot: Uses EW projection (plus PL)
+		Trend Wave Bot: Uses OSC Signal Survey
+
+	Short-term bots
+		VERA-ASH: uses ASH algo to detect near-term MACD moves
+
+	other..
+
+
+Experimental:
+	Bot corner: a place where "bots" are blogging about trade intentions
+
+
+Pages
+	Public 
+		Landing Page
+		Subscription Page
+		About us page
+	Private
+		Bot Landing
+		Bot Page
+		Blog
+		Video Analysis
+		Feedback
+		Teaching a Pro
+		Teaching a Newbie
+
+notes:
+	https://stripe.com/us/pricing  - credit card processing
+	custom charts
+	predictors and direction indicators
+	dark backcolor?
+	Requires charting that allows annotation (for projected paths)
+	Shows Bots results on trades with 1MM portfolio (profits/percentages)
+	Shows bots latest trades
+	A/B Testing for 'serious' vs 'cartoony' bot design -> subscription
+	GoogleAnalytics (async)
+	Bing Analytics  (async)
+	Requires that I update each bots analysis in the evening and update the data that drives everything in the evening. 
+	- bot would use that new update on the appropriate day
+	Google Phone number with answering machine (obviously)
+
+
+
+LEGACY Dev Plan:
 
 AI_Core
   XBrokerageProcessor -> handles getting specific data related to strategies from a given brokerage
