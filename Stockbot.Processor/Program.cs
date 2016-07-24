@@ -10,12 +10,12 @@ namespace Stockbot.Processor
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine("Enter username:");
-            //string username = Console.ReadLine();
-           // Console.WriteLine("Enter username:");
-            //string password = ReadPassword();
-            string username = "z";
-            string password = "x";
+            Console.WriteLine("Enter username:");
+            string username = Console.ReadLine();
+            Console.WriteLine("Enter username:");
+            string password = ReadPassword();
+            //string username = "";
+            //string password = "x";
             ScottradeConnector sc = new ScottradeConnector( );
             bool result = sc.TryConnectToService("", username, password);
             Console.WriteLine("{0}", result ? "success!" : "Failure! :(");

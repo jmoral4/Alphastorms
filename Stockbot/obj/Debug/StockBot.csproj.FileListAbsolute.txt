@@ -24,3 +24,5 @@ C:\Github\Alphastorms\Stockbot\bin\HtmlAgilityPack.xml
 C:\Github\Alphastorms\Stockbot\obj\Debug\StockBot.csprojResolveAssemblyReference.cache
 C:\Github\Alphastorms\Stockbot\obj\Debug\StockBot.dll
 C:\Github\Alphastorms\Stockbot\obj\Debug\StockBot.pdb
+C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\bin\HtmlAgilityPack.dll
+C:\Users\jomorale\Documents\GitHub\Alphastorms\Stockbot\bin\HtmlAgilityPack.xml

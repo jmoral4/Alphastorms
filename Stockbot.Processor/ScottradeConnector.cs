@@ -36,7 +36,7 @@ namespace Stockbot.Processor
                     "https://stockcharts.com/scripts/php/dblogin.php",
                     "//form[@id='loginform']",
                     FormQueryModeEnum.Nested
-                    );
+                 );
 
                 //http://stockcharts.com/def/servlet/Favorites.CServlet
                 
