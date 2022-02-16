@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alphastorms.ManifestGen", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alphastorms.Client", "Alphastorms.Client\Alphastorms.Client.csproj", "{94AD2526-56B7-4D9D-8F58-5A59311DD9F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alphastorms.Shared", "Alphastorms.Shared\Alphastorms.Shared.csproj", "{B62F9166-F26E-4CEB-94D0-4B7674674D1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alphastorms.Shared", "Alphastorms.Shared\Alphastorms.Shared.csproj", "{B62F9166-F26E-4CEB-94D0-4B7674674D1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -43,8 +43,10 @@ namespace Alphastorms.Server
         bool InProgress { get; set; }
 
     }
-    internal class BasicGameServer
+    internal class BasicGameServer : BackgroundService
     {
+        private readonly ILogger<BasicGameServer> _logger;
+
         Random r = new Random();
         //store a list of player data which we will use to determine who is playing whom and the state of the game
         ConcurrentDictionary<string, ServerPlayerData> _knownPlayers;
@@ -59,18 +61,25 @@ namespace Alphastorms.Server
         short _nextPlayerId = 0;
         private int GetNextPlayerId() => _nextPlayerId++;
 
-        public BasicGameServer()
+        public BasicGameServer(ILogger<BasicGameServer> logger)
         {
+            _logger = logger;
             _knownPlayers = new ConcurrentDictionary<string, ServerPlayerData>();
             _activeGames = new ConcurrentDictionary<string, GameSession>();
         }
 
-
+        public override async Task StartAsync(CancellationToken cancellationToken)
+        {            
+            Start();
+            _logger.LogInformation("Server Shutdown at: {time}", DateTimeOffset.Now);
+            //pause before exit
+            //Console.ReadKey();
+        }
 
 
         public void Start()
         {
-            Console.WriteLine("GAME SERVER STARTED");
+            _logger.LogInformation("GAME SERVER STARTED");
             EventBasedNetListener listener = new EventBasedNetListener();
             NetManager server = new NetManager(listener);
             server.Start(9050 /* port */);
@@ -130,7 +139,7 @@ namespace Alphastorms.Server
 
 
                 var pdat = _knownPlayers[key];
-                Console.WriteLine("PLAYER JOINED: {0} as PLAYER {1} with ID {2}", peer.EndPoint, pdat.PlayerNumber, pdat.ClientID);
+                _logger.LogInformation("PLAYER JOINED: {0} as PLAYER {1} with ID {2}", peer.EndPoint, pdat.PlayerNumber, pdat.ClientID);
                 //send our info in a welcome packet
                 WelcomePacket wp = new WelcomePacket
                 {
@@ -141,7 +150,7 @@ namespace Alphastorms.Server
                 };
 
                 _packetProcessor.Send<WelcomePacket>(peer, wp, DeliveryMethod.ReliableOrdered);
-                Console.WriteLine("Packet Processor Sent Packet!");
+                _logger.LogInformation("Packet Processor Sent Packet!");
                 //peer.Send(_netSerializer.Serialize<WelcomePacket>(wp), DeliveryMethod.ReliableOrdered);
 
 
@@ -152,6 +161,7 @@ namespace Alphastorms.Server
 
             listener.NetworkReceiveEvent += Listener_NetworkReceiveEvent;
 
+            // hold the server thread from exiting until we've "pressed any key
             while (!Console.KeyAvailable)
             {
                 server.PollEvents();
@@ -219,8 +229,8 @@ namespace Alphastorms.Server
                 if (update.PlayerAction == 3)
                     playerRecord.PlayerLocation.X += 5;
 
-                Console.WriteLine($"Updated Player {playerRecord.PlayerNumber} Location to { playerRecord.PlayerLocation.X},{playerRecord.PlayerLocation.Y}");
-                Console.WriteLine($"Echo'd Peer:{peer.EndPoint.ToString()} with {update.PlayerAction}");
+                _logger.LogInformation($"Updated Player {playerRecord.PlayerNumber} Location to { playerRecord.PlayerLocation.X},{playerRecord.PlayerLocation.Y}");
+                _logger.LogInformation($"Echo'd Peer:{peer.EndPoint.ToString()} with {update.PlayerAction}");
                 EchoPacket ep = new EchoPacket() { ClientDirection = update.PlayerAction };
                 _packetProcessor.Send<EchoPacket>(peer, ep, DeliveryMethod.ReliableOrdered);
 
@@ -243,8 +253,13 @@ namespace Alphastorms.Server
             {
                 Debug.Assert(false, "The Connected Peer was Unknown to us! (Did not exist in KnownPlayer list)");
                 // TODO: should assert or at least log this properly for future debugging
-                Console.WriteLine($"Unknown Client connected as:{key}!");
+                _logger.LogInformation($"Unknown Client connected as:{key}!");
             }
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
         }
     }
 }
