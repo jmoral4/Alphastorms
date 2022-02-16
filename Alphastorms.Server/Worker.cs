@@ -17,5 +17,14 @@ namespace Alphastorms.Server
                 await Task.Delay(1000, stoppingToken);
             }
         }
+
+        public override async Task StartAsync(CancellationToken cancellationToken)
+        { 
+            BasicGameServer server = new BasicGameServer();
+            server.Start();
+            Console.WriteLine("Server Shutdown");
+            //pause before exit
+            Console.ReadKey();
+        }
     }
 }
