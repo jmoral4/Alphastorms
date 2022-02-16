@@ -1,5 +1,0 @@
-C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\bin\StockBot.dll.config
-C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\bin\StockBot.dll
-C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\bin\StockBot.pdb
-C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\obj\Release\StockBot.dll
-C:\Users\jomorale\Documents\Visual Studio 2013\Projects\StockBot\obj\Release\StockBot.pdb
