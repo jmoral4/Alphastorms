@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AlphastormsEngine
+namespace Alphastorms.Client
 {
     public static class Program
     {

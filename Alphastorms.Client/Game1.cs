@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace AlphastormsEngine
+namespace Alphastorms.Client
 {
     public class Game1 : Game
     {
