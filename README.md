@@ -1,5 +1,18 @@
-# Alphastorms Engine and Tools
+# Alphatorms
+Alphastorms is a C# .NET 6.0 cross-platform MMO engine with a Monogame test client. 
 
+## About the Author
+As a former developer on MMO servers (Ultima Online shards, Shadowrun MMO [cancelled]), I've had a lifelong passion for creating online games and scaleable simulations. Between my dayjob as a Cloud Engineer and side job as a engineer for a massively parallel trading platform, I find that I'm always trying to force distributed and parallel computing into my projects. Alphastorms is my attempt to channel that energy into something that might be useful for the game dev commnunity. The engine is intended to be used to power a 2D front-end (which will be provided) powered by Monogame or any C# capable platform. In theory, a 3D client could be created but, I'm not a 3D dev so that's not my area of focus at the moment.
+
+## Goal
+The goal is to deliver a self-contained MMO engine with client and server powered by .NET 6.0 and easily run on any platform. Each release will contain the server, the client, any tools, data generation scripts for the datastore and any open-source or free-to-use-and-distribute assets used in the Client. 
+
+It should ultimately be as simple as "dotnet alphastorms.server.dll" to start the server and "dotnet alphastorms.client.dll" to start the client. 
+
+Below is a bit of free-flowing design and thinking.
+
+
+# Alphastorms Components
 ## Alphastorms Downloader
 The client side download tool used to download files and executables from the download server
 
@@ -21,7 +34,7 @@ This is NOT for models or client/server shared code/etc. It is only for basic OS
 
 
 
-# Thoughts and Planning
+# Thoughts and Planning 
 * The downloader will require credentials in order to "login" to it. That login delivers a secure token good for a slice of time (perhaps 4 hours)
 * The downloader will update the game client and then pass it that token when launching it in order to provide authentication
     - The downloader will pass 2 tokens. 
@@ -54,6 +67,10 @@ public IActionResult GetDocumentBytes(int id)
 }
 ```
     -- or...download the files using C#/.NET filedownload and a direct filepath (i.e., normal HTTP download). The previous option is mainly to prevent arbitrary people from downloading/wasting bandwidth without the client
+
+## Storage/db client
+* Will probably go with Sqlite on the client for simplicity
+* server storage hasn't been nailed down but it may be either something Dapper powered (to give flexibility) or perhaps more specific if NoSql seems like the best option for certain workloads (or for developer speed/sanity)
 
 
 ## Steps for downloader to Client Launch
