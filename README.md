@@ -1,4 +1,4 @@
-# Alphatorms
+# Alphastorms
 Alphastorms is a C# .NET 6.0 cross-platform MMO engine with a Monogame test client. 
 
 ## About the Author
