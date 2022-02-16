@@ -9,6 +9,10 @@ The goal is to deliver a self-contained MMO engine with client and server powere
 
 It should ultimately be as simple as "dotnet alphastorms.server.dll" to start the server and "dotnet alphastorms.client.dll" to start the client. 
 
+## Current State
+Currently, you can run the server and spawn up to 4 clients (switchable in code). Moving any of the clients results in the others being updated. Clients other than "yourself" are represented as blue/green version of the "Robbit" main character. The current implementation is an initial test and will be improved upon. This is in keeping with our stated goal of "always having a playable release". 
+
+![Current state of the Engine](current_state.png "content")
 
 # Alphastorms Components
 ## Alphastorms Downloader
@@ -40,4 +44,5 @@ This is NOT for models or client/server shared code/etc. It is only for basic OS
 * Development of support tools to allow deployment of the server (i.e. the downloader and manifest gen)
 * Development and Deployment of website with canonical implementation deployed either in process or in cloud nearby, along with hosting future docs and links to this repo. 
 * A persistent server running once there's something worth showing where players can create accounts, login, and chat or play with other users
+
 
