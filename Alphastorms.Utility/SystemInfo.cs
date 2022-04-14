@@ -8,7 +8,7 @@ using System.Runtime.Versioning;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace RogueSquadLib.BaseServices
+namespace Alphastorms.Shared.BaseServices
 {
     public sealed class OSInfo
     {

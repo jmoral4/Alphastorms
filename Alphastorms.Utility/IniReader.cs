@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Alphastorms.Shared.BaseServices
 {
-    class IniReader
+    public class IniReader
     {
         Dictionary<string, Dictionary<string, string>> ini = new Dictionary<string, Dictionary<string, string>>(StringComparer.CurrentCultureIgnoreCase);
 
@@ -45,7 +45,6 @@ namespace Alphastorms.Shared.BaseServices
         {
             return GetValue(key, "", "");
         }
-
         public string GetValue(string key, string section)
         {
             return GetValue(key, section, "");

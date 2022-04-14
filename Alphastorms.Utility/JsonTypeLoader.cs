@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RogueSquadLib.Util
+namespace Alphastorms.Shared.BaseServices
 {
    public class JsonTypeLoader<T> where T: class
     {

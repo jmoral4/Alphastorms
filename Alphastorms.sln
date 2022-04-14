@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alphastorms.Client", "Alpha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alphastorms.Shared", "Alphastorms.Shared\Alphastorms.Shared.csproj", "{B62F9166-F26E-4CEB-94D0-4B7674674D1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alphastorms.Downloader.Win", "Alphastorms.Downloader.Win\Alphastorms.Downloader.Win.csproj", "{59F47967-E539-4638-B039-ED8418B01FCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{B62F9166-F26E-4CEB-94D0-4B7674674D1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B62F9166-F26E-4CEB-94D0-4B7674674D1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B62F9166-F26E-4CEB-94D0-4B7674674D1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59F47967-E539-4638-B039-ED8418B01FCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59F47967-E539-4638-B039-ED8418B01FCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59F47967-E539-4638-B039-ED8418B01FCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59F47967-E539-4638-B039-ED8418B01FCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

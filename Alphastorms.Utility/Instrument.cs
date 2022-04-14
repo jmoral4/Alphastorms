@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-namespace RogueSquadLib.BaseServices
+namespace Alphastorms.Shared.BaseServices
 {
     internal class Instrument
     {
