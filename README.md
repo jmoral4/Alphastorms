@@ -2,15 +2,17 @@
 Alphastorms is a C# .NET 6.0 cross-platform MMO engine with a Monogame test client. 
 
 ## About the Author
-As a former developer on MMO servers (Ultima Online shards, Shadowrun MMO [cancelled]), I've had a lifelong passion for creating online games and scaleable simulations. Between my dayjob as a Cloud Engineer and side job as a engineer for a massively parallel trading platform, I find that I'm always trying to force distributed and parallel computing into my projects. Alphastorms is my attempt to channel that energy into something that might be useful for the game dev commnunity. The engine is intended to be used to power a 2D front-end (which will be provided) powered by Monogame or any C# capable platform. In theory, a 3D client could be created but, I'm not a 3D dev so that's not my area of focus at the moment.
+I'm a former developer on MMO projects (Ultima Online shards, Shadowrun MMO [cancelled]) who's had a lifelong passion for creating online games and scaleable simulations. By day I work as a cloud engineer as well as a side job as a founder of a trading related startup. 
+
+I'm always trying to include distributed and parallel computing in my projects and Alphastorms is my attempt to channel that energy into something that might be useful to the game dev commnunity. The game server will be front-ended by a 2D, Monogame client. It should be generalizable to any .NET or C# client.
 
 ## Goal
-The goal is to deliver a self-contained MMO engine with client and server powered by .NET 6.0 and easily run on any platform. Each release will contain the server, the client, any tools, data generation scripts for the datastore and any open-source or free-to-use-and-distribute assets used in the Client. 
+The goal is to deliver a self-contained MMO engine with client and server powered by .NET 6.0 that easily runs on any platform. Each release will contain the server, the client, any tools, data generation scripts for the datastore, and any open-source or free-to-use-and-distribute assets referenced by the Client. 
 
-It should ultimately be as simple as "dotnet alphastorms.server.dll" to start the server and "dotnet alphastorms.client.dll" to start the client. 
+It should be as simple as "dotnet alphastorms.server.dll" to start the server and "dotnet alphastorms.client.dll" to start the client. 
 
 ## Current State
-Currently, you can run the server and spawn up to 4 clients (switchable in code). Moving any of the clients results in the others being updated. Clients other than "yourself" are represented as blue/green version of the "Robbit" main character. The current implementation is an initial test and will be improved upon. This is in keeping with our stated goal of "always having a playable release". 
+Currently, you can run the server and spawn clients to connect. The client and server share basic movement data and moving any of the clients results in the others being updated. Clients other than "yourself" are represented as blue/green version of the "Robbit" main character. The current implementation is an initial test and will be improved upon. This is in keeping with our stated goal of "always having a playable release". 
 
 ![Current state of the Engine](current_state.png "content")
 
